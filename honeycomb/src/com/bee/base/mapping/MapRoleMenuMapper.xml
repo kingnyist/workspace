@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bee.base.dao.MapRoleMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.bee.base.model.MapRoleMenu" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MENU_NO" property="menuNo" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="STATUS_REM" property="statusRem" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bee.base.model.MapRoleMenu" extends="BaseResultMap" >
+    <result column="ROLE_NO" property="roleNo" jdbcType="VARBINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MENU_NO, STATUS, STATUS_REM, CREATE_TIME, UPDATE_TIME
+  </sql>
+  <sql id="Blob_Column_List" >
+    ROLE_NO
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from map_role_menu
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from map_role_menu
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bee.base.model.MapRoleMenu" >
+    insert into map_role_menu (ID, MENU_NO, STATUS, 
+      STATUS_REM, CREATE_TIME, UPDATE_TIME, 
+      ROLE_NO)
+    values (#{id,jdbcType=VARCHAR}, #{menuNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{statusRem,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
+      #{roleNo,jdbcType=VARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bee.base.model.MapRoleMenu" >
+    insert into map_role_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="menuNo != null" >
+        MENU_NO,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="statusRem != null" >
+        STATUS_REM,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="roleNo != null" >
+        ROLE_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="menuNo != null" >
+        #{menuNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="statusRem != null" >
+        #{statusRem,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="roleNo != null" >
+        #{roleNo,jdbcType=VARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bee.base.model.MapRoleMenu" >
+    update map_role_menu
+    <set >
+      <if test="menuNo != null" >
+        MENU_NO = #{menuNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="statusRem != null" >
+        STATUS_REM = #{statusRem,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="roleNo != null" >
+        ROLE_NO = #{roleNo,jdbcType=VARBINARY},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bee.base.model.MapRoleMenu" >
+    update map_role_menu
+    set MENU_NO = #{menuNo,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      STATUS_REM = #{statusRem,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      ROLE_NO = #{roleNo,jdbcType=VARBINARY}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bee.base.model.MapRoleMenu" >
+    update map_role_menu
+    set MENU_NO = #{menuNo,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      STATUS_REM = #{statusRem,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

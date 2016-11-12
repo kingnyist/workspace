@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-table.min.css"> 
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<div class="col-mod-12 guide-row">系统管理>用户管理</div>
+<div class="row">
+  <div class="col-xs-1">
+    	<!-- 占位 -->
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	用户编号
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-userNo" class="form-control">
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	手机号
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-phoneNo" class="form-control">
+  </div>
+  <div class="col-xs-1">
+    <button type="button" id="btn-query" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="container">
+	<div class="col-xs-6  text-left">
+    <button type="button" id="btn-restPwd" class="btn btn-primary btn-xs">重置密码</button>
+    </div>
+	<div class="col-xs-6  text-right">
+    <button type="button" id="btn-view" class="btn btn-success btn-xs">查看</button>
+    <button type="button" id="btn-add" class="btn btn-info btn-xs">添加</button>
+    <button type="button" id="btn-edit" class="btn btn-warning btn-xs">编辑</button>
+    <button type="button" id="btn-delete" class="btn btn-danger btn-xs">删除</button>
+    </div>
+    <table id="table-user"></table>
+</div>
+<div id="view-dialog" class="view-dialog-hidden">
+	<div class="dialog-header">
+		<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<div id="dialog-title" class="col-xs-11 guide-row">用户编辑</div>
+    </div>
+	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
+	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
+</div> 
+</div>
+</body>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+    var queryUrl = '/honeycomb/user/list.htm?rnd=' + Math.random();
+    var key = "userNo";
+    var table = $('#table-user');
+    $(function () {
+    	initTable(queryUrl, table);
+    });
+    var header = [{
+        field: 'state',
+        checkbox: true
+    }, {
+        field: 'userNo',
+        title: '用户编号',
+        width: 70,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: false,
+        edit: true,
+        editType: "text",
+        verify: "string:2:10",
+        need: false,
+        sortable: true
+    }, {
+        field: 'userName',
+        title: '用户名称',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string:2:10",
+        sortable: true
+    }, {
+        field: 'phoneNo',
+        title: '手机号',
+        width: 80,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "cellphone",
+        need: true,
+        sortable: true
+    }, {
+        field: 'idCard',
+        title: '身份证号',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "idcard",
+        need: true,
+        sortable: true
+    }, {
+        field: 'departmentNo',
+        title: '部门编号',
+        width: 80,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: true,
+        sortable: true
+    }, {
+        field: 'departmentName',
+        title: '部门名称',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: true,
+        sortable: true
+    }, {
+        field: 'roleNo',
+        title: '角色编号',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: true,
+        sortable: true
+    }, {
+        field: 'roleName',
+        title: '角色名称',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: true,
+        sortable: true
+    }, {
+        field: 'branchName',
+        title: '分支机构名称',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: false,
+        sortable: true
+    }, {
+        field: 'branchNo',
+        title: '分支机构编号',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: false,
+        sortable: true
+    }, {
+        field: 'status',
+        title: '状态',
+        width: 50,
+        align: 'middle',
+        valign: 'top',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: false,
+        sortable: true
+    }, {
+        field: 'statusRem',
+        title: '状态备注',
+        width: 50,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "textarea",
+        verify: "string",
+        need: false,
+        sortable: true
+    }, {
+        field: 'loginIp',
+        title: '登录IP',
+        width: 50,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string",
+        need: false,
+        sortable: true
+    }, {
+        field: 'createTime',
+        title: '创建时间',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        editType: "text",
+        need: false,
+        sortable: true
+    }, {
+        field: 'updateTime',
+        title: '修改时间',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: true,
+        view: true,
+        add: false,
+        edit: false,
+        editType: "text",
+        need: false,
+        sortable: true
+    }]; 
+    
+    function queryParams(params) {
+        return {
+            pageSize: params.pageSize,
+            userNo: $("#query-userNo").val(),
+            phoneNo: $("#query-phoneNo").val(),  
+            startRowNum: 0,
+            endRowNum: 10, 
+            offset: params.offset,
+            limit: params.limit,
+            order: params.sortOrder
+        };
+    }
+    
+    function add(){
+    	$.beeAjaxParam.requestParam = {
+    			userName : $("#userName").val(),
+    			phoneNo : $("#phoneNo").val(),
+    			email : $("#email").val(),
+    			idCard : $("#idCard").val(),
+    			departmentNo : $("#departmentNo").val(),
+    			departmentName : $("#departmentName").val(),
+    			roleNo : $("#roleNo").val(),
+    			roleName : $("#roleName").val(),
+    			branchNo : $("#branchNo").val(),
+    			branchName : $("#branchName").val(),
+    			status : $("#status").val(),
+    			statusRem : $("#statusRem").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/user/add.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+    function edit(){
+    	$.beeAjaxParam.requestParam = {
+    			userNo : $("#userNo").val(),
+    			userName : $("#userName").val(),
+    			phoneNo : $("#phoneNo").val(),
+    			email : $("#email").val(),
+    			idCard : $("#idCard").val(),
+    			departmentNo : $("#departmentNo").val(),
+    			departmentName : $("#departmentName").val(),
+    			roleNo : $("#roleNo").val(),
+    			roleName : $("#roleName").val(),
+    			branchNo : $("#branchNo").val(),
+    			branchName : $("#branchName").val(),
+    			status : $("#status").val(),
+    			statusRem : $("#statusRem").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/user/edit.htm?rnd=' + Math.random();
+    	if(!$.beeDialog.verify()){
+    		return;
+    	}
+    	beeCallAjax();
+    }
+    
+    function deleteRow(){
+    	$.beeAjaxParam.requestParam = $('#table-user').bootstrapTable('getSelections')[0];
+    	$.beeAjaxParam.requestUrl = '/honeycomb/user/delete.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+</script>
+</html>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bee.base.dao.BeeMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.bee.base.model.BeeMenu" >
+    <id column="MENU_ID" property="menuId" jdbcType="VARCHAR" />
+    <result column="PARENT_ID" property="parentId" jdbcType="CHAR" />
+    <result column="MENU_NAME" property="menuName" jdbcType="VARCHAR" />
+    <result column="MENU_URL" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="MENU_ICON" property="menuIcon" jdbcType="VARCHAR" />
+    <result column="IS_MENU" property="isMenu" jdbcType="VARCHAR" />
+    <result column="MENU_SEQ" property="menuSeq" jdbcType="INTEGER" />
+    <result column="MENU_STATUS" property="menuStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MENU_ID, PARENT_ID, MENU_NAME, MENU_URL, MENU_ICON, IS_MENU, MENU_SEQ, MENU_STATUS, 
+    CREATE_TIME, UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_menu
+    where MENU_ID = #{menuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bee_menu
+    where MENU_ID = #{menuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bee.base.model.BeeMenu" >
+    insert into bee_menu (MENU_ID, PARENT_ID, MENU_NAME, 
+      MENU_URL, MENU_ICON, IS_MENU, 
+      MENU_SEQ, MENU_STATUS, CREATE_TIME, 
+      UPDATE_TIME)
+    values (#{menuId,jdbcType=VARCHAR}, #{parentId,jdbcType=CHAR}, #{menuName,jdbcType=VARCHAR}, 
+      #{menuUrl,jdbcType=VARCHAR}, #{menuIcon,jdbcType=VARCHAR}, #{isMenu,jdbcType=VARCHAR}, 
+      #{menuSeq,jdbcType=INTEGER}, #{menuStatus,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, 
+      #{updateTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bee.base.model.BeeMenu" >
+    insert into bee_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        MENU_ID,
+      </if>
+      <if test="parentId != null" >
+        PARENT_ID,
+      </if>
+      <if test="menuName != null" >
+        MENU_NAME,
+      </if>
+      <if test="menuUrl != null" >
+        MENU_URL,
+      </if>
+      <if test="menuIcon != null" >
+        MENU_ICON,
+      </if>
+      <if test="isMenu != null" >
+        IS_MENU,
+      </if>
+      <if test="menuSeq != null" >
+        MENU_SEQ,
+      </if>
+      <if test="menuStatus != null" >
+        MENU_STATUS,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuIcon != null" >
+        #{menuIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="isMenu != null" >
+        #{isMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="menuSeq != null" >
+        #{menuSeq,jdbcType=INTEGER},
+      </if>
+      <if test="menuStatus != null" >
+        #{menuStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bee.base.model.BeeMenu" >
+    update bee_menu
+    <set >
+      <if test="parentId != null" >
+        PARENT_ID = #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="menuName != null" >
+        MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuIcon != null" >
+        MENU_ICON = #{menuIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="isMenu != null" >
+        IS_MENU = #{isMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="menuSeq != null" >
+        MENU_SEQ = #{menuSeq,jdbcType=INTEGER},
+      </if>
+      <if test="menuStatus != null" >
+        MENU_STATUS = #{menuStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+    </set>
+    where MENU_ID = #{menuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bee.base.model.BeeMenu" >
+    update bee_menu
+    set PARENT_ID = #{parentId,jdbcType=CHAR},
+      MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+      MENU_ICON = #{menuIcon,jdbcType=VARCHAR},
+      IS_MENU = #{isMenu,jdbcType=VARCHAR},
+      MENU_SEQ = #{menuSeq,jdbcType=INTEGER},
+      MENU_STATUS = #{menuStatus,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE}
+    where MENU_ID = #{menuId,jdbcType=VARCHAR}
+  </update>
+</mapper>
