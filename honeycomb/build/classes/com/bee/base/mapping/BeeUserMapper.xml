@@ -293,4 +293,8 @@
       limit #{offset,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
       </if>
   </select>
+  
+  <select id="selectMaxUserNo" resultType="java.lang.String">
+    select  max(USER_NO) from bee_user
+  </select>
 </mapper>

@@ -18,4 +18,6 @@ public interface BeeUserMapper {
     int updateByPrimaryKey(BeeUser record);
     
     public List<BeeUser> selectListByCondition(BeeUser record);
+    
+    public String selectMaxUserNo();
 }

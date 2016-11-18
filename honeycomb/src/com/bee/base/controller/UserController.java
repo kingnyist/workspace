@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,11 +30,11 @@ public class UserController extends BaseController{
       
     @RequestMapping(value = "/list", method = RequestMethod.POST)  
     @ResponseBody  
-    public String selectList(@ModelAttribute BeeUser requestBean,HttpServletRequest request){
+    public String selectList(@RequestBody BeeUser requestBean,HttpServletRequest request){
     	log.info("查询列表");
     	BeeUser user = requestBean;
         List<BeeUser> list = beeUserDao.selectListByCondition(user);
-        BaseResponse responseBean = new BaseResponse();
+        BaseResponse<BeeUser> responseBean = new BaseResponse<BeeUser>();
         responseBean.setRows(list);
         user.setLimit(null);
         user.setOffset(null);
@@ -63,8 +62,8 @@ public class UserController extends BaseController{
     @ResponseBody  
     public String add(@RequestBody BeeUser requestBean,HttpServletRequest request){ 
     	BeeUser user = new BeeUser();
-        List<BeeUser> list = beeUserDao.selectListByCondition(user);
-        int num = list.size();
+        String maxUserNo = beeUserDao.selectMaxUserNo()==null?"BEE0000":beeUserDao.selectMaxUserNo();
+        Integer num = Integer.valueOf(maxUserNo.replaceAll("BEE", ""));
         String userNo = "BEE" + String.format("%04d", num+1);
         user = requestBean;
         user.setUserNo(userNo);

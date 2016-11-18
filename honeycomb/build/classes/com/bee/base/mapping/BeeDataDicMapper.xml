@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bee.base.dao.BeeDataDicMapper" >
+  <resultMap id="BaseResultMap" type="com.bee.base.model.BeeDataDic" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DATA_TYPE" property="dataType" jdbcType="VARCHAR" />
+    <result column="DATA_TYPE_NAME" property="dataTypeName" jdbcType="VARCHAR" />
+    <result column="DATA_VALUE" property="dataValue" jdbcType="VARCHAR" />
+    <result column="DATA_NAME" property="dataName" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DATA_TYPE, DATA_TYPE_NAME, DATA_VALUE, DATA_NAME, CREATE_TIME, UPDATE_TIME, OPERATOR
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_data_dic
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bee_data_dic
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.bee.base.model.BeeDataDic" >
+    insert into bee_data_dic (ID, DATA_TYPE, DATA_TYPE_NAME, DATA_VALUE, 
+      DATA_NAME, CREATE_TIME, UPDATE_TIME, 
+      OPERATOR)
+    values (#{id,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{dataTypeName,jdbcType=VARCHAR}, #{dataValue,jdbcType=VARCHAR}, 
+      #{dataName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{operator,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bee.base.model.BeeDataDic" >
+    insert into bee_data_dic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dataTypeName != null" >
+        DATA_TYPE_NAME,
+      </if>
+      <if test="dataType != null" >
+        DATA_TYPE,
+      </if>
+      <if test="dataValue != null" >
+        DATA_VALUE,
+      </if>
+      <if test="dataName != null" >
+        DATA_NAME,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="operator != null" >
+        OPERATOR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTypeName != null" >
+        #{dataTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataValue != null" >
+        #{dataValue,jdbcType=VARCHAR},
+      </if>
+      <if test="dataName != null" >
+        #{dataName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bee.base.model.BeeDataDic" >
+    update bee_data_dic
+    <set >
+      <if test="dataType != null" >
+        DATA_TYPE = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTypeName != null" >
+        DATA_TYPE_NAME = #{dataTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataValue != null" >
+        DATA_VALUE = #{dataValue,jdbcType=VARCHAR},
+      </if>
+      <if test="dataName != null" >
+        DATA_NAME = #{dataName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        OPERATOR = #{operator,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bee.base.model.BeeDataDic" >
+    update bee_data_dic
+    set DATA_TYPE = #{dataType,jdbcType=VARCHAR},
+      DATA_TYPE_NAME = #{dataTypeName,jdbcType=VARCHAR},
+      DATA_VALUE = #{dataValue,jdbcType=VARCHAR},
+      DATA_NAME = #{dataName,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      OPERATOR = #{operator,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectListByCondition" resultMap="BaseResultMap" parameterType="com.bee.base.model.BeeMenu" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_data_dic
+    where 1 = 1
+      <if test="dataType != null" >
+        and DATA_TYPE = #{dataType,jdbcType=VARCHAR}
+      </if>
+      <if test="dataTypeName != null" >
+        and DATA_TYPE_NAME = #{dataTypeName,jdbcType=VARCHAR}
+      </if>
+      <if test="dataValue != null" >
+        and DATA_VALUE = #{dataValue,jdbcType=VARCHAR}
+      </if>
+      <if test="dataName != null" >
+        and DATA_NAME = #{dataName,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+        and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="operator != null" >
+        and OPERATOR = #{operator,jdbcType=VARCHAR}
+      </if>
+      order by DATA_TYPE
+      <if test="limit != null and limit != ''">
+      limit #{offset,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+      </if>
+  </select>
+  
+  <select id="selectListByDateTypes" resultMap="BaseResultMap" parameterType="java.util.ArrayList" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_data_dic
+    where DATA_TYPE in
+    <foreach collection="array" item="dataType" index="index"
+            open="(" close=")" separator=",">
+            #{dataType}
+    </foreach>
+  </select>
+</mapper>

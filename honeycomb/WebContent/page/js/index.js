@@ -297,8 +297,10 @@
             })
             return reval;
         },
+        menuData: 1,
         loadMenu: function () {
-        	var data = [{"isMenu":"0","menuIcon":"fa fa-desktop","menuId":"1","menuName":"菜单一","menuUrl":"","parentId":"0"},{"isMenu":"1","menuIcon":"fa fa-sitemap","menuId":"101","menuName":"菜单二","menuUrl":"test02.html","parentId":"1"},{"isMenu":"1","menuIcon":"fa fa-leaf","menuId":"102","menuName":"菜单三","menuUrl":"test.html","parentId":"1"}];
+        	var data = $.learunindex.menuData;
+        	var data1 = [{"isMenu":"0","menuIcon":"fa fa-desktop","menuId":"1","menuName":"菜单一","menuUrl":"","parentId":"0"},{"isMenu":"1","menuIcon":"fa fa-sitemap","menuId":"101","menuName":"菜单二","menuUrl":"menu.html","parentId":"1"},{"isMenu":"1","menuIcon":"fa fa-leaf","menuId":"102","menuName":"菜单三","menuUrl":"test.html","parentId":"1"}];
             var data2 = [{ "menuId": "1", "parentId": "0", "F_EnCode": "SysManage", "menuName": "系统管理", "menuIcon": "fa fa-desktop", "menuUrl": null, "F_Target": "expand", "isMenu": 0, "F_AllowExpand": 1, "F_IsPublic": 0, "F_AllowEdit": null, "F_AllowDelete": null, "F_SortCode": 1, "F_DeleteMark": 0, "F_EnabledMark": 1, "F_Description": null, "F_CreateDate": null, "F_CreateUserId": null, "F_CreateUserName": null, "F_ModifyDate": "2015-11-17 11:22:46", "F_ModifyUserId": "System", "F_ModifyUserName": "超级管理员" }
             		, { "menuId": "8", "parentId": "2", "F_EnCode": "OrganizeManage", "menuName": "机构管理", "menuIcon": "fa fa-sitemap", "menuUrl": "/BaseManage/Organize/Index", "F_Target": "iframe", "isMenu": 1, "F_AllowExpand": 1, "F_IsPublic": 0, "F_AllowEdit": null, "F_AllowDelete": null, "F_SortCode": 1, "F_DeleteMark": 0, "F_EnabledMark": 1, "F_Description": null, "F_CreateDate": null, "F_CreateUserId": null, "F_CreateUserName": null, "F_ModifyDate": "2016-04-29 11:55:28", "F_ModifyUserId": "System", "F_ModifyUserName": "超级管理员" }
             		, { "menuId": "7ae94059-9aa5-48eb-8330-4e2a6565b193", "parentId": "1", "F_EnCode": "AreaManage", "menuName": "行政区域", "menuIcon": "fa fa-leaf", "menuUrl": "/SystemManage/Area/Index", "F_Target": "iframe", "isMenu": 1, "F_AllowExpand": 1, "F_IsPublic": 0, "F_AllowEdit": null, "F_AllowDelete": null, "F_SortCode": 1, "F_DeleteMark": 0, "F_EnabledMark": 1, "F_Description": "行政区域管理", "F_CreateDate": "2015-11-12 14:38:20", "F_CreateUserId": "System", "F_CreateUserName": "超级管理员", "F_ModifyDate": "2016-04-29 14:05:33", "F_ModifyUserId": "System", "F_ModifyUserName": "超级管理员" }
@@ -445,6 +447,19 @@
         }
     };
     $(function () {
+    	$.ajax({
+    		url : '/honeycomb/menu/menuShow.htm?rnd=' + Math.random(),
+    		type : 'POST',
+    		async : false,
+    		dataType : "json",
+    		contentType: "application/json",
+    		data : JSON.stringify({}),
+    		cache : false,
+    		success : function(data) {
+    			var result = $.parseJSON(data);
+    			$.learunindex.menuData = result.rows;
+    		}
+    	});
         $.learunindex.load();
         $.learunindex.loadMenu();
         $.learuntab.init();

@@ -2,7 +2,12 @@ package com.bee.base.model;
 
 import java.util.Date;
 
-public class BeeMenu {
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.bee.base.bean.PageBean;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class BeeMenu extends PageBean{
     private String menuId;
 
     private String parentId;
@@ -86,7 +91,8 @@ public class BeeMenu {
     public void setMenuStatus(String menuStatus) {
         this.menuStatus = menuStatus == null ? null : menuStatus.trim();
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getCreateTime() {
         return createTime;
     }
@@ -94,7 +100,8 @@ public class BeeMenu {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getUpdateTime() {
         return updateTime;
     }

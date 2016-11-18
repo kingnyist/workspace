@@ -17,29 +17,26 @@ $(function () {
 	$('#btn-delete').bind('click', function(){
 		deleteRow();
 	});
-	$('#btn-restPwd').bind('click', function(){
-		$.beeAlert.open("success","成功");
-	});
-
 });
 
 //构建编辑框对象
 $.beeDialog = {
+		columnNum : 2,
 		//基于bootstrap的表单控件的模板
 		formGroupText : "<div class=\"form-group padding-right\">{files}</div>",
 		//文本框
-		text : "<label for=\"{id}\" class=\"col-sm-2 control-label\">{fileName}</label>"
-				    +"<div class=\"col-sm-4\">"
+		text : "<label for=\"{id}\" class=\"col-sm-{two} control-label\">{fileName}</label>"
+				    +"<div class=\"col-sm-{four}\">"
 				    +"<input type=\"text\" class=\"form-control\" id=\"{id}\" value=\"{value}\" {readonly}>"
 				    +"</div>",
 	    //下拉列表
-		select : "<label for=\"{id}\" class=\"col-sm-2 control-label\">{fileName}</label>"
-					+"<div class=\"col-sm-4\">"
-					+"<select class=\"form-control\" id=\"{id}\" {readonly}>{option}</select>"
+		select : "<label for=\"{id}\" class=\"col-sm-{two} control-label\">{fileName}</label>"
+					+"<div class=\"col-sm-{four}\">"
+					+"<select class=\"form-control\" id=\"{id}\">{option}</select>"
 					+"</div>",
 		//文本区
-		textarea : "<label for=\"{id}\" class=\"col-sm-2 control-label\">{fileName}</label>"
-				    +"<div class=\"col-sm-10\">"
+		textarea : "<label for=\"{id}\" class=\"col-sm-{two} control-label\">{fileName}</label>"
+				    +"<div class=\"col-sm-{ten}\">"
 				    +"<textarea class=\"form-control\" rows=\"2\" id=\"{id}\" {readonly}></textarea>"
 				    +"</div>",
 		//占位标签
@@ -73,6 +70,9 @@ $.beeDialog = {
 				$.beeAlert.open("9999", "请选择记录");
 				return;
 			}
+			if(typeof(columnNum)!="undefined"){
+				$.beeDialog.columnNum = columnNum;
+			}
 			//对应记录内容 添加时为空
 			var rowData = table.bootstrapTable('getSelections');
 			var readonly = "";
@@ -87,7 +87,7 @@ $.beeDialog = {
 				var value = header[i];
 		        if(value.field!="state"){
 		        	var temp = "";
-		        	if(value.editType != "textarea"){
+		        	if(value.editType == "text"){
 		        		temp = $.beeDialog.text;
 		            	temp = temp.replace(new RegExp(/({id})/g), value.field);
 		            	temp = temp.replace("{fileName}", value.title);
@@ -110,6 +110,31 @@ $.beeDialog = {
 			            	filetemp = filetemp + temp;
 			            	n = n + 1;
 		            	}
+		        	}else if(value.editType == "select"){
+		            	if((type == "add" || type == "edit") && value.field != key){
+			        		temp = $.beeDialog.select;
+			            	temp = temp.replace(new RegExp(/({id})/g), value.field);
+			            	temp = temp.replace("{fileName}", value.title);
+			            	temp = temp.replace(new RegExp(/({option})/g), eval(value.field+"_option"));
+		            	}else{
+		            		temp = $.beeDialog.text;
+			            	temp = temp.replace(new RegExp(/({id})/g), value.field);
+			            	temp = temp.replace("{fileName}", value.title);
+			            	readonly = "readonly=\"readonly\"";
+			            	var showValue = eval("rowData[0]." + value.field);
+			            	if(showValue == null){
+			            		showValue = "";
+			            	}
+			            	//映射出格式化函数 并执行
+			            	var formater = eval(value.formatter)
+			            	showValue = formater(showValue);
+	            			temp = temp.replace("{value}", showValue);
+		            	}
+		            	readonly = "";
+		            	if(eval("value."+type)){
+			            	filetemp = filetemp + temp;
+			            	n = n + 1;
+		            	}
 		        	}else{
 		        		temp = $.beeDialog.textarea;
 		        		if(n==0){
@@ -126,16 +151,18 @@ $.beeDialog = {
 			            		temp = temp.replace("{value}", "");
 			            	}
 		                	filetemp = temp;
-		            		n = n + 2;
+		            		n = n + $.beeDialog.columnNum;
 		        		}else{
-		        			filetemp = filetemp + $.beeDialog.placeholder;
+		        			if($.beeDialog.columnNum==2){
+			        			filetemp = filetemp + $.beeDialog.placeholder;
+		        			}
 		        			i = i - 1;
 		            		n = n + 1;
 		        		}
 		        	}
 		        	
 		        }
-		        if(n==2){
+		        if(n==$.beeDialog.columnNum){
 		        	htmltext = htmltext + formGroupTextTemp.replace("{files}", filetemp);
 		        	formGroupTextTemp = $.beeDialog.formGroupText;
 		        	filetemp ="";
@@ -144,6 +171,15 @@ $.beeDialog = {
 		        	htmltext = htmltext + formGroupTextTemp.replace("{files}", filetemp);
 		        }
 		    };
+		    var x = 1;
+		    if($.beeDialog.columnNum==1){
+		    	x = 2;
+		    }else if($.beeDialog.columnNum==2){
+		    	x = 1;
+		    }
+		    htmltext = htmltext.replace(new RegExp(/({two})/g), 2*x+"");
+		    htmltext = htmltext.replace(new RegExp(/({four})/g), 4*x+"");
+		    htmltext = htmltext.replace(new RegExp(/({ten})/g), 12-2*x+"");
 		    $("#form-horizontal").empty();
 		    $("#form-horizontal").append(htmltext);
 		    $.beeDialog.setDialogBut(type);
@@ -175,71 +211,78 @@ $.beeDialog = {
 		},
 		
 		verify : function(){
-			$.each(header, function(n, value){
+			var result = true;
+			for(n in header){
+				var value = header[n];
 				if(value.file != "state" && (value.verify || value.verify == false)){
 					var textValue = $("#"+value.field).val();
 					if(value.editType == "textarea"){
 						textValue=$("#"+value.field).text();
 					}
 					if(value.verify.indexOf("string")>=0){
+						var array = value.verify.split(":");
+						
+						if(array[1] && value.need){
+							if(textValue.length>array[1]){
+								$.beeAlert.open("9999", value.title+"输入长度超过"+array[1]+"位！");
+								result =  false;
+								break;
+							}
+						}
+						if(array[2] && value.need){
+							if(textValue.length<array[2]){
+								$.beeAlert.open("9999", value.title+"输入长度小于"+array[2]+"位！");
+								result =  false;
+								break;
+							}
+						}
 						
 					}else if(value.verify.indexOf("cellphone")>=0){
 						var cellphoneReg = /^[0-9]{11}$/;
-						if (cellphoneReg.test(textValue)) {
-							return true;
-						} else {
+						if (!cellphoneReg.test(textValue)) {
 							$.beeAlert.open("9999", "手机号格式不正确！");
-							$("#"+value.field).focus();
-							return false;
+							result =  false;
+							break;
 						}
 					}else if(value.verify.indexOf("email")>=0){
 						var emailReg = /[a-z0-9]*@[a-z0-9]*\.[a-z0-9]+/gi;
-						if (emailReg.test(textValue)) {
-							return true;
-						} else {
+						if (!emailReg.test(textValue)) {
 							$.beeAlert.open("9999", "电子信箱格式不对！");
-							$("#"+value.field).foucs();
-							return false;
+							result =  false;
+							break;
 						}
 					}else if(value.verify.indexOf("idcard")>=0){
-						var idcardReg = /^[0-9]{17}[0-9A-Za-z]{1}$|^[0-9]{14}[0-9A-Za-z]{1}$/;
-						if (idcardReg.test(textValue)) {
-							return true;
-						} else {
+						var idcardReg = /^[0-9]{17}[0-9X]{1}$|^[0-9]{14}[0-9X]{1}$/;
+						if (!idcardReg.test(textValue)) {
 							$.beeAlert.open("9999", "身份证号码输入格式错误！");
-							$("#"+value.field).foucs();
-							return false;
+							result =  false;
+							break;
 						}
 					}else if(value.verify.indexOf("age")>=0){
 						var ageReg = /^[1-9][0-9]{2}$/;
-						if (ageReg.test(textValue)) {
-							return true;
-						} else {
+						if (!ageReg.test(textValue)) {
 							$.beeAlert.open("9999", "年龄输入格式错误！");
-							$("#"+value.field).foucs();
-							return false;
+							result =  false;
+							break;
 						}
 					}else if(value.verify.indexOf("number")>=0){
 						var numberReg = /^[1-9][0-9]{2}$/;
-						if (numberReg.test(textValue)) {
-							return true;
-						} else {
+						if (!numberReg.test(textValue)) {
 							$.beeAlert.open("9999", value.title+"输入格式错误！");
-							$("#"+value.field).focus();
-							return false;
+							result =  false;
+							break;
 						}
-					}else{
-						return true;
 					}
 				}
-			});
+			}		
+			return result;
 		}
 };
 
 //初始化页面数据表
 function initTable(queryUrl) {
 	$table = table.bootstrapTable({
-		method: 'POST',
+		method: 'post',
         url: queryUrl,         //请求后台的URL（*）
         classes: 'table table-striped',
         toolbar: '#toolbar',                //工具按钮用哪个容器
@@ -272,19 +315,19 @@ function initTable(queryUrl) {
 $.beeAjaxParam = {
 		requestParam : {},
 		requestUrl : "",
-		successCallBack : function(data){
-			var result = $.parseJSON(data);
+		async : true,
+		successCallBack : function(result){
 			$.beeAlert.open(result.rspCode, result.rspMsg);
 			if(result.rspCode == "0000"){
 				$.beeDialog.closeWindow();
 			}
 			$table.bootstrapTable('refresh', {url: queryUrl}); 
 		} ,
-		errorCallBack : function(){
-			$.beeAlert.open("9999", "失败");
+		errorCallBack : function(msg){
+			$.beeAlert.open("9999", msg);
 		} 
 }
-
+//用于增删改查
 function beeCallAjax() {
 	$.ajax({
 		url : $.beeAjaxParam.requestUrl,
@@ -295,10 +338,11 @@ function beeCallAjax() {
 		data : JSON.stringify($.beeAjaxParam.requestParam),
 		cache : false,
 		success : function(data) {
-			$.beeAjaxParam.successCallBack(data);
+			var result = $.parseJSON(data);
+			$.beeAjaxParam.successCallBack(result);
 		},
 		error : function() {
-			$.beeAjaxParam.errorCallBack();
+			$.beeAjaxParam.errorCallBack("请求失败");
 		}
 	});
 }
@@ -323,4 +367,54 @@ $.beeAlert = {
 			+ "<div class=\"content\">{content}</div>"
 			+ "<div class=\"floor\"><button type=\"button\" id=\"btn-alert\" class=\"btn btn-primary btn-xs\">确定</button></div>"
 			+ "</div>" + "</div>",//弹出框模板
+}
+
+//用于查询数据 回调函数必须自定义
+function beeCallAjaxQuery(callBack) {
+	$.ajax({
+		url : $.beeAjaxParam.requestUrl,
+		type : 'POST',
+		async : false,
+		dataType : "json",
+		contentType: "application/json",
+		data : JSON.stringify($.beeAjaxParam.requestParam),
+		cache : false,
+		success : function(data) {
+			var result = $.parseJSON(data);
+			callBack(result.rows);
+		},
+		error : function() {
+			console.log("数据查询请求发送失败");
+		}
+	});
+}
+//查询数据字典的数据
+function queryDateDic(dataTypes, callBack){
+	$.beeAjaxParam.requestParam = {
+			'dataType' : dataTypes
+	};
+	$.beeAjaxParam.requestUrl = '/honeycomb/data/queryAll.htm?rnd=' + Math.random();
+	beeCallAjaxQuery(callBack);
+}
+//格式化状态可用/不可用
+function formatStatus(value){
+	var returnValue = value;
+	for(var n = 0; n < datalist.length; n++){
+		if(value == datalist[n].dataValue && datalist[n].dataType == "USABLE"){
+			returnValue = datalist[n].dataName;
+			break;
+		}
+	}
+	return returnValue;
+}
+//格式化是否
+function formatWether(value){
+	var returnValue = value;
+	for(var n = 0; n < datalist.length; n++){
+		if(value == datalist[n].dataValue && datalist[n].dataType == "WETHER"){
+			returnValue = datalist[n].dataName;
+			break;
+		}
+	}
+	return returnValue;
 }

@@ -61,11 +61,15 @@
     var key = "userNo";//设置主键
     var columnNum = 2;//设置Dialog一行显示字段数量
     var table = $('#table-user');
+    var datalist; //数据字典列表
+    var status_option = "";//构造状态下拉列表
     $(function () {
+    	queryDateDic("USABLE", function(result){datalist = result;});
     	initTable(queryUrl, table);
     	$('#btn-restPwd').bind('click', function(){
     		$.beeAlert.open("success","成功");
     	});
+    	status_option = create_status_option("USABLE");
     });
     var header = [{
         field: 'state',
@@ -210,10 +214,11 @@
         width: 50,
         align: 'middle',
         valign: 'top',
+        formatter: formatStatus,
         view: true,
         add: true,
         edit: true,
-        editType: "text",
+        editType: "select",
         verify: "string",
         need: false,
         sortable: true
@@ -264,7 +269,7 @@
         width: 100,
         align: 'middle',
         valign: 'top',
-        visible: true,
+        visible: false,
         view: true,
         add: false,
         edit: false,
@@ -274,16 +279,14 @@
     }]; 
     
     function queryParams(params) {
-        return {
-            pageSize: params.pageSize,
-            userNo: $("#query-userNo").val(),
-            phoneNo: $("#query-phoneNo").val(),  
-            startRowNum: 0,
-            endRowNum: 10, 
-            offset: params.offset,
-            limit: params.limit,
-            order: params.sortOrder
-        };
+    	var result = params;
+    	var userNO = $("#query-userNo").val();
+    	var phoneNo = $("#query-phoneNo").val();
+    	if(userNO && userNO != "")
+    		result.userNo=userNO;
+    	if(phoneNo && phoneNo != "")
+    		result.phoneNo=phoneNo;
+        return result;
     }
     
     function add(){
@@ -335,6 +338,16 @@
     	$.beeAjaxParam.requestParam = $('#table-user').bootstrapTable('getSelections')[0];
     	$.beeAjaxParam.requestUrl = '/honeycomb/user/delete.htm?rnd=' + Math.random();
     	beeCallAjax();
+    }
+    
+    function create_status_option(key){
+    	var returnValue = "<option value=''>请选择</option>";
+    	for(var n = 0; n < datalist.length; n++){
+    		if(key == datalist[n].dataType){
+    			returnValue = returnValue + "<option value='"+datalist[n].dataValue+"'>"+datalist[n].dataName+"</option>"
+    		}
+    	}
+    	return returnValue;
     }
     
 </script>

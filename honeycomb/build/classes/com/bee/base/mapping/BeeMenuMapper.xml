@@ -150,4 +150,44 @@
       UPDATE_TIME = #{updateTime,jdbcType=DATE}
     where MENU_ID = #{menuId,jdbcType=VARCHAR}
   </update>
+  <select id="selectListByCondition" resultMap="BaseResultMap" parameterType="com.bee.base.model.BeeMenu" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_menu
+    where 1 = 1
+    <if test="parentId != null" >
+        and PARENT_ID = #{parentId,jdbcType=CHAR}
+      </if>
+      <if test="menuName != null" >
+        and MENU_NAME = #{menuName,jdbcType=VARCHAR}
+      </if>
+      <if test="menuUrl != null" >
+        and MENU_URL = #{menuUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="menuIcon != null" >
+        and MENU_ICON = #{menuIcon,jdbcType=VARCHAR}
+      </if>
+      <if test="isMenu != null" >
+        and IS_MENU = #{isMenu,jdbcType=VARCHAR}
+      </if>
+      <if test="menuSeq != null" >
+        and MENU_SEQ = #{menuSeq,jdbcType=INTEGER}
+      </if>
+      <if test="menuStatus != null" >
+        and MENU_STATUS = #{menuStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and CREATE_TIME = #{createTime,jdbcType=DATE}
+      </if>
+      <if test="updateTime != null" >
+        and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="limit != null and limit != ''">
+      limit #{offset,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+      </if>
+  </select>
+  
+  <select id="selectMaxUserNo" resultType="java.lang.String">
+    select max(MENU_ID) from bee_menu
+  </select>
 </mapper>

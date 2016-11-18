@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-table.min.css"> 
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<div class="col-mod-12 guide-row">系统管理>菜单管理</div>
+<div class="row">
+  <div class="col-xs-1">
+    	<!-- 占位 -->
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	菜单编号
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-menuNo" class="form-control">
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	菜单名称
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-menuName" class="form-control">
+  </div>
+  <div class="col-xs-1">
+    <button type="button" id="btn-query" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="container">
+	<div class="col-xs-12  text-right">
+    <button type="button" id="btn-view" class="btn btn-success btn-xs">查看</button>
+    <button type="button" id="btn-add" class="btn btn-info btn-xs">添加</button>
+    <button type="button" id="btn-edit" class="btn btn-warning btn-xs">编辑</button>
+    <button type="button" id="btn-delete" class="btn btn-danger btn-xs">删除</button>
+    </div>
+    <table id="table-user"></table>
+</div>
+<div id="view-dialog" class="view-dialog-hidden">
+	<div class="dialog-header">
+		<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<div id="dialog-title" class="col-xs-11 guide-row">用户编辑</div>
+    </div>
+	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
+	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
+</div> 
+</div>
+</body>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+    var queryUrl = '/honeycomb/menu/list.htm?rnd=' + Math.random();
+    var key = "menuId";//设置主键
+    var columnNum = 2;//设置Dialog一行显示字段数量
+    var table = $('#table-user');
+    $(function () {
+    	queryDateDic("USABLE,WETHER", function(result){datalist = result;});
+    	initTable(queryUrl, table);
+    });
+    var header = [{
+        field: 'state',
+        align: 'middle',
+        checkbox: true
+    }, {
+        field: 'menuId',
+        title: '菜单编号',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: false,
+        edit: true,
+        need: false,
+        editType: "text",
+        sortable: true
+    }, {
+        field: 'parentId',
+        title: '父节点编号',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'menuName',
+        title: '菜单名称',
+        width: 100,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "String:50:3",
+        need: true,
+        sortable: true
+    }, {
+        field: 'menuUrl',
+        title: '菜单链接',
+        width: 180,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        sortable: true
+    }, {
+        field: 'menuIcon',
+        title: '菜单图标',
+        width: 100,
+        align: 'middle',
+        valign: 'middle',
+        visible: false,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'menuSeq',
+        title: '菜单序号',
+        width: 40,
+        align: 'middle',
+        valign: 'middle',
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'isMenu',
+        title: '是否是菜单',
+        width: 40,
+        align: 'middle',
+        valign: 'middle',
+        formatter: formatWether,
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string:1:0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'menuStatus',
+        title: '状态',
+        width: 40,
+        align: 'middle',
+        valign: 'middle',
+        formatter: formatStatus,
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'createTime',
+        title: '创建时间',
+        width: 100,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        editType: "text",
+        need: false,
+        sortable: true
+    }, {
+        field: 'updateTime',
+        title: '修改时间',
+        width: 80,
+        align: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        editType: "text",
+        need: false,
+        sortable: true
+    }]; 
+    
+    function queryParams(params) {
+    	var result = params;
+    	var menuNo = $("#query-menuNo").val();
+    	var menuName = $("#query-menuName").val();
+    	if(menuNo && menuNo != "")
+    		result.menuNo=menuNo;
+    	if(menuName && menuName != "")
+    		result.menuName=menuName;
+        return result;
+    }
+    
+    function add(){
+    	$.beeAjaxParam.requestParam = {
+    			parentId : $("#parentId").val(),
+    			menuName : $("#menuName").val(),
+    			menuUrl : $("#menuUrl").val(),
+    			menuIcon : $("#menuIcon").val(),
+    			menuSeq : $("#menuSeq").val(),
+    			menuStatus : $("#menuStatus").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/menu/add.htm?rnd=' + Math.random();
+    	if(!$.beeDialog.verify()){
+    		return;
+    	}
+    	beeCallAjax();
+    }
+    
+    function edit(){
+    	$.beeAjaxParam.requestParam = {
+    			menuId : $("#menuId").val(),
+    			parentId : $("#parentId").val(),
+    			menuName : $("#menuName").val(),
+    			menuUrl : $("#menuUrl").val(),
+    			menuIcon : $("#menuIcon").val(),
+    			menuSeq : $("#menuSeq").val(),
+    			menuStatus : $("#menuStatus").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/menu/edit.htm?rnd=' + Math.random();
+    	if(!$.beeDialog.verify()){
+    		return;
+    	}
+    	beeCallAjax();
+    }
+    
+    function deleteRow(){
+    	$.beeAjaxParam.requestParam = $('#table-user').bootstrapTable('getSelections')[0];
+    	$.beeAjaxParam.requestUrl = '/honeycomb/menu/delete.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+    function create_status_option(key){
+    	var returnValue = "<option value=''>请选择</option>";
+    	for(var n = 0; n < datalist.length; n++){
+    		if(key == datalist[n].dataType){
+    			returnValue = returnValue + "<option value='"+datalist[n].dataValue+"'>"+datalist[n].dataName+"</option>"
+    		}
+    	}
+    	return returnValue;
+    }
+    
+</script>
+</html>

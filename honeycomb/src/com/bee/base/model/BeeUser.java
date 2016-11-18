@@ -163,8 +163,8 @@ public class BeeUser extends PageBean{
         this.loginIp = loginIp == null ? null : loginIp.trim();
     }
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")  
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")  
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getCreateTime() {
         return createTime;
     }
@@ -173,8 +173,8 @@ public class BeeUser extends PageBean{
         this.createTime = createTime;
     }
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")  
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")  
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getUpdateTime() {
         return updateTime;
     }

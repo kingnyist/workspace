@@ -1,5 +1,7 @@
 package com.bee.base.dao;
 
+import java.util.List;
+
 import com.bee.base.model.BeeMenu;
 
 public interface BeeMenuMapper {
@@ -14,4 +16,8 @@ public interface BeeMenuMapper {
     int updateByPrimaryKeySelective(BeeMenu record);
 
     int updateByPrimaryKey(BeeMenu record);
+    
+    List<BeeMenu> selectListByCondition(BeeMenu record);
+
+    public String selectMaxUserNo();
 }

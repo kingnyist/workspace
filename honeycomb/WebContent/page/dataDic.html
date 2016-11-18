@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-table.min.css"> 
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<div class="col-mod-12 guide-row">系统管理>数据字典管理</div>
+<div class="row">
+  <div class="col-xs-1">
+    	<!-- 占位 -->
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	数据类型
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-dateType" class="form-control">
+  </div>
+  <div class="col-xs-1 query-area text-right">
+    	数据名称
+  </div>
+  <div class="col-xs-3">
+    <input type="text" id="query-dateTypeName" class="form-control">
+  </div>
+  <div class="col-xs-1">
+    <button type="button" id="btn-query" class="btn btn-primary">查询</button>
+  </div>
+</div>
+<div class="container">
+	<div class="col-xs-12  text-right">
+    <button type="button" id="btn-view" class="btn btn-success btn-xs">查看</button>
+    <button type="button" id="btn-add" class="btn btn-info btn-xs">添加</button>
+    <button type="button" id="btn-edit" class="btn btn-warning btn-xs">编辑</button>
+    <button type="button" id="btn-delete" class="btn btn-danger btn-xs">删除</button>
+    </div>
+    <table id="table"></table>
+</div>
+<div id="view-dialog" class="view-dialog-hidden">
+	<div class="dialog-header">
+		<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<div id="dialog-title" class="col-xs-11 guide-row">用户编辑</div>
+    </div>
+	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
+	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
+</div> 
+</div>
+</body>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table.js"></script>
+    <script src="js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+    var queryUrl = '/honeycomb/data/list.htm?rnd=' + Math.random();
+    var key = "id";//设置主键
+    $.beeDialog.columnNum = 2;//设置Dialog一行显示字段数量
+    var table = $('#table');
+    $(function () {
+    	initTable(queryUrl, table);
+    });
+    var header = [{
+        field: 'state',
+        checkbox: true
+    }, {
+        field: 'id',
+        title: '编号',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: false,
+        view: true,
+        add: false,
+        edit: true,
+        need: false,
+        sortable: true
+    }, {
+        field: 'dataType',
+        title: '数据类型',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'dataTypeName',
+        title: '数据类型名称',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "string::0",
+        need: true,
+        sortable: true
+    }, {
+        field: 'dataValue',
+        title: '数据值',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        verify: "String:50:3",
+        need: true,
+        sortable: true
+    }, {
+        field: 'dataName',
+        title: '数据名称',
+        width: 100,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: true,
+        edit: true,
+        editType: "text",
+        sortable: true
+    }, {
+        field: 'createTime',
+        title: '创建时间',
+        width: 100,
+        align: 'middle',
+        valign: 'middle',
+        visible: true,
+        view: true,
+        add: false,
+        edit: false,
+        need: true,
+        sortable: true
+    }, {
+        field: 'updateTime',
+        title: '更新时间',
+        width: 40,
+        align: 'middle',
+        valign: 'middle',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        need: true,
+        sortable: true
+    }, {
+        field: 'operator',
+        title: '最后更新人',
+        width: 80,
+        align: 'middle',
+        valign: 'middle',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        need: true,
+        sortable: true
+    }]; 
+    
+    function queryParams(params) {
+    	var result = params;
+    	var dateType = $("#query-dataType").val();
+    	var dateTypeName = $("#query-dateTypeName").val();
+    	if(dateType && dateType != "")
+    		result.dateType=dateType;
+    	if(dateTypeName && dateTypeName != "")
+    		result.dateTypeName=dateTypeName;
+        return result;
+    }
+    
+    function add(){
+    	$.beeAjaxParam.requestParam = {
+    			dataType : $("#dataType").val(),
+    			dataTypeName : $("#dataTypeName").val(),
+    			dataName : $("#dataName").val(),
+    			dataValue : $("#dataValue").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/data/add.htm?rnd=' + Math.random();
+    	if(!$.beeDialog.verify()){
+    		return;
+    	}
+    	beeCallAjax();
+    }
+    
+    function edit(){
+    	$.beeAjaxParam.requestParam = {
+    			id : $("#id").val(),
+    			dataType : $("#dataType").val(),
+    			dataTypeName : $("#dataTypeName").val(),
+    			dataName : $("#dataName").val(),
+    			dataValue : $("#dataValue").val()
+    	};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/data/edit.htm?rnd=' + Math.random();
+    	if(!$.beeDialog.verify()){
+    		return;
+    	}
+    	beeCallAjax();
+    }
+    
+    function deleteRow(){
+    	$.beeAjaxParam.requestParam = $('#table').bootstrapTable('getSelections')[0];
+    	$.beeAjaxParam.requestUrl = '/honeycomb/data/delete.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+</script>
+</html>

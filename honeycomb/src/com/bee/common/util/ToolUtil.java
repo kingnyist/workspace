@@ -10,6 +10,8 @@
  */
 package com.bee.common.util;
 
+import java.util.UUID;
+
 
 /**
  * 工具方法类
@@ -19,4 +21,14 @@ package com.bee.common.util;
  * @since [产品/模块版本] （可选）
  */
 public class ToolUtil {
+	
+	/**
+	 * 创建uuid
+	 *
+	 * @return
+	 */
+	public static String getUUID(){
+		String uuid = UUID.randomUUID().toString();
+		return uuid.replaceAll("-", "");
+	}
 }
