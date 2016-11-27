@@ -25,5 +25,8 @@ public class SystemCode {
 	//失败
 	public static String FAIL_CODE = "9999";
 	public static String FAIL_MSG = "失败";
+	//登录失败
+	public static String LOGIN_FAIL_CODE = "9001";
+	public static String LOGIN_FAIL_MSG = "用户名或密码错误";
 	
 }

@@ -25,6 +25,10 @@ body {
 	font-weight: bold;
 }
 
+.warn {
+	color: red;
+}
+
 a:hover {
 	text-decoration: none;
 }
@@ -56,7 +60,8 @@ a:hover {
 	left: 0;
 	right: 0;
 	top: 0;
-	bottom: 0;
+	bottom: auto;
+	min-height: 300px;
 	max-height: 500px;
 	width: 70%;
 	background-color: #fafafa;
@@ -71,6 +76,10 @@ a:hover {
 	background-color: #3c8dbc;
 	line-height: 35px;
 	margin-bottom: 15px;
+}
+.dialog-bottom{
+	width: 100%;
+	height: 15px;
 }
 
 .dialog-but-area {
@@ -128,4 +137,11 @@ a:hover {
 	text-align: right;
 	padding-left: 10px;
 	padding-right: 15px;
+}
+
+.login-box{
+	height: 200px;
+	width: 300px;
+	margin: auto;
+	padding-top: 200px;
 }

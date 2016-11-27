@@ -15,28 +15,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bee.base.bean.BaseResponse;
 import com.bee.base.bean.ResultBean;
-import com.bee.base.dao.BeeMenuMapper;
-import com.bee.base.model.BeeMenu;
+import com.bee.base.dao.BeeRoleMapper;
+import com.bee.base.model.BeeRole;
 import com.bee.common.util.DateUtil;
+import com.bee.common.util.ToolUtil;
 import com.bee.common.variables.SystemCode;
   
 @Controller  
-@RequestMapping("/menu")  
-public class MenuController extends BaseController{
-	private Logger log = Logger.getLogger(MenuController.class);
+@RequestMapping("/role")  
+public class RoleController extends BaseController{
+	private Logger log = Logger.getLogger(RoleController.class);
 	
     @Resource  
-    private BeeMenuMapper beeMenuDao;  
+    private BeeRoleMapper beeRoleDao;  
     
-    @RequestMapping(value = "/menuShow", method = RequestMethod.POST)  
+    @RequestMapping(value = "/roleShow", method = RequestMethod.POST)  
     @ResponseBody  
-    public String menuShow(@RequestBody BeeMenu requestBean,HttpServletRequest request){
+    public String roleShow(@RequestBody BeeRole requestBean,HttpServletRequest request){
     	log.info("查询列表");
-    	BeeMenu beeMenu = requestBean;
-        beeMenu.setLimit(null);
-        beeMenu.setOffset(null);
-        List<BeeMenu> list = beeMenuDao.selectListByCondition(beeMenu);
-        BaseResponse<BeeMenu> responseBean = new BaseResponse<BeeMenu>();
+    	BeeRole BeeRole = requestBean;
+        BeeRole.setLimit(null);
+        BeeRole.setOffset(null);
+        List<BeeRole> list = beeRoleDao.selectListByCondition(BeeRole);
+        BaseResponse<BeeRole> responseBean = new BaseResponse<BeeRole>();
         responseBean.setRows(list);
 
         return objectToJson(responseBean);  
@@ -44,15 +45,15 @@ public class MenuController extends BaseController{
     
     @RequestMapping(value = "/list", method = RequestMethod.POST)  
     @ResponseBody  
-    public String selectList(@RequestBody BeeMenu requestBean,HttpServletRequest request){
+    public String selectList(@RequestBody BeeRole requestBean,HttpServletRequest request){
     	log.info("查询列表");
-    	BeeMenu beeMenu = requestBean;
-        List<BeeMenu> list = beeMenuDao.selectListByCondition(beeMenu);
-        BaseResponse<BeeMenu> responseBean = new BaseResponse<BeeMenu>();
+    	BeeRole BeeRole = requestBean;
+        List<BeeRole> list = beeRoleDao.selectListByCondition(BeeRole);
+        BaseResponse<BeeRole> responseBean = new BaseResponse<BeeRole>();
         responseBean.setRows(list);
-        beeMenu.setLimit(null);
-        beeMenu.setOffset(null);
-        list = beeMenuDao.selectListByCondition(beeMenu);
+        BeeRole.setLimit(null);
+        BeeRole.setOffset(null);
+        list = beeRoleDao.selectListByCondition(BeeRole);
         responseBean.setTotal(list.size());
 
         return objectToJson(responseBean);  
@@ -60,10 +61,10 @@ public class MenuController extends BaseController{
     
     @RequestMapping(value = "/edit", method = RequestMethod.POST)  
     @ResponseBody  
-    public String edit(@RequestBody BeeMenu requestBean,HttpServletRequest request){ 
-    	BeeMenu beeMenu = requestBean;
-    	beeMenu.setUpdateTime(new Date());
-    	int n = beeMenuDao.updateByPrimaryKeySelective(beeMenu);
+    public String edit(@RequestBody BeeRole requestBean,HttpServletRequest request){ 
+    	BeeRole BeeRole = requestBean;
+    	BeeRole.setUpdateTime(new Date());
+    	int n = beeRoleDao.updateByPrimaryKeySelective(BeeRole);
     	ResultBean result = new ResultBean();
     	if(n == 1){
     		result.setRspCode(SystemCode.SUCCESS_CODE);
@@ -77,16 +78,16 @@ public class MenuController extends BaseController{
     
     @RequestMapping(value = "/add", method = RequestMethod.POST)  
     @ResponseBody  
-    public String add(@RequestBody BeeMenu requestBean,HttpServletRequest request){ 
-    	BeeMenu beeMenu = new BeeMenu();
-        beeMenu = requestBean;
-        String maxMenuId = beeMenuDao.selectMaxUserNo()==null?"MENU000":beeMenuDao.selectMaxUserNo();
-        Integer num = Integer.valueOf(maxMenuId.replaceAll("MENU", ""));
-        String menuId = "MENU" + String.format("%03d", num+1);
-        beeMenu.setMenuId(menuId);
-        beeMenu.setCreateTime(DateUtil.getNowDate());
-        beeMenu.setUpdateTime(DateUtil.getNowDate());
-        int n = beeMenuDao.insert(beeMenu);
+    public String add(@RequestBody BeeRole requestBean,HttpServletRequest request){ 
+    	BeeRole BeeRole = new BeeRole();
+        BeeRole = requestBean;
+        String maxMenuId = beeRoleDao.selectMaxId()==null?"ROLE000":beeRoleDao.selectMaxId();
+        Integer num = Integer.valueOf(maxMenuId.replaceAll("ROLE", ""));
+        String roleId = "BEE" + String.format("%03d", num+1);
+        BeeRole.setId(roleId);
+        BeeRole.setCreateTime(DateUtil.getNowDate());
+        BeeRole.setUpdateTime(DateUtil.getNowDate());
+        int n = beeRoleDao.insert(BeeRole);
     	ResultBean result = new ResultBean();
         if(n == 1){
     		result.setRspCode(SystemCode.SUCCESS_CODE);
@@ -100,9 +101,9 @@ public class MenuController extends BaseController{
     
     @RequestMapping(value = "/delete", method = RequestMethod.POST)  
     @ResponseBody  
-    public String delete(@RequestBody BeeMenu requestBean,HttpServletRequest request){ 
-    	BeeMenu beeMenu = requestBean;
-    	int n = beeMenuDao.deleteByPrimaryKey(beeMenu.getMenuId());
+    public String delete(@RequestBody BeeRole requestBean,HttpServletRequest request){ 
+    	BeeRole BeeRole = requestBean;
+    	int n = beeRoleDao.deleteByPrimaryKey(BeeRole.getId());
     	ResultBean result = new ResultBean();
     	if(n == 1){
     		result.setRspCode(SystemCode.SUCCESS_CODE);

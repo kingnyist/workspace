@@ -48,6 +48,7 @@
     </div>
 	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
 	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
+	<div class="dialog-bottom"></div>
 </div> 
 </div>
 </body>
@@ -67,7 +68,7 @@
     	queryDateDic("USABLE", function(result){datalist = result;});
     	initTable(queryUrl, table);
     	$('#btn-restPwd').bind('click', function(){
-    		$.beeAlert.open("success","成功");
+    		restPwd();
     	});
     	status_option = create_status_option("USABLE");
     });
@@ -335,8 +336,24 @@
     }
     
     function deleteRow(){
-    	$.beeAjaxParam.requestParam = $('#table-user').bootstrapTable('getSelections')[0];
+    	var rowData = table.bootstrapTable('getSelections');
+		if(rowData.length == 0){
+			$.beeAlert.open("9999", "请选择记录");
+			return ;
+		}
+		$.beeAjaxParam.requestParam = {"userNo":rowData[0].userNo};
     	$.beeAjaxParam.requestUrl = '/honeycomb/user/delete.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+    function restPwd(){
+    	var rowData = table.bootstrapTable('getSelections');
+		if(rowData.length == 0){
+			$.beeAlert.open("9999", "请选择记录");
+			return ;
+		}
+    	$.beeAjaxParam.requestParam = {"userNo":rowData[0].userNo};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/user/rest.htm?rnd=' + Math.random();
     	beeCallAjax();
     }
     

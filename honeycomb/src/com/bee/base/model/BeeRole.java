@@ -2,7 +2,12 @@ package com.bee.base.model;
 
 import java.util.Date;
 
-public class BeeRole {
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.bee.base.bean.PageBean;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class BeeRole extends PageBean{
     private String id;
 
     private String roleName;
@@ -46,7 +51,8 @@ public class BeeRole {
     public void setStatusRem(String statusRem) {
         this.statusRem = statusRem == null ? null : statusRem.trim();
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getCreateTime() {
         return createTime;
     }
@@ -54,7 +60,8 @@ public class BeeRole {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")  
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")  
     public Date getUpdateTime() {
         return updateTime;
     }

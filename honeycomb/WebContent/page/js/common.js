@@ -2,21 +2,31 @@ $(function () {
 	//页面上 弹出dialog右上角的关闭按钮事件绑定
 	$(".close").bind("click", function(){$.beeDialog.closeWindow();});
 	//页面查询按钮事件绑定
-	$('#btn-query').bind('click', function() { 
-		table.bootstrapTable('refresh');
+	if($('#btn-query')){
+		$('#btn-query').bind('click', function() { 
+			table.bootstrapTable('refresh');
 		});
-	$('#btn-view').bind('click', function(){
-    	$.beeDialog.createDialog("view");
-	});
-	$('#btn-add').bind('click', function(){
-    	$.beeDialog.createDialog("add");
-	});
-	$('#btn-edit').bind('click', function(){
-    	$.beeDialog.createDialog("edit");
-	});
-	$('#btn-delete').bind('click', function(){
-		deleteRow();
-	});
+	}
+	if($('#btn-view')){
+		$('#btn-view').bind('click', function(){
+	    	$.beeDialog.createDialog("view");
+		});
+	}
+	if($('#btn-add')){
+		$('#btn-add').bind('click', function(){
+	    	$.beeDialog.createDialog("add");
+		});
+	}
+	if($('#btn-edit')){
+		$('#btn-edit').bind('click', function(){
+	    	$.beeDialog.createDialog("edit");
+		});
+	}
+	if($('#btn-delete')){
+		$('#btn-delete').bind('click', function(){
+			deleteRow();
+		});
+	}
 });
 
 //构建编辑框对象
@@ -37,7 +47,7 @@ $.beeDialog = {
 		//文本区
 		textarea : "<label for=\"{id}\" class=\"col-sm-{two} control-label\">{fileName}</label>"
 				    +"<div class=\"col-sm-{ten}\">"
-				    +"<textarea class=\"form-control\" rows=\"2\" id=\"{id}\" {readonly}></textarea>"
+				    +"<textarea class=\"form-control\" rows=\"2\" id=\"{id}\" {readonly}>{value}</textarea>"
 				    +"</div>",
 		//占位标签
 		placeholder : "<div class=\"col-sm-6\"></div>",
@@ -49,6 +59,8 @@ $.beeDialog = {
 		butEdit : "　<button type=\"button\" id=\"dialog-but-edit\" class=\"btn btn-info\">确定</button>　",
 		//查看页面的确认按钮
 		butSure : "　<button type=\"button\" id=\"dialog-but-sure\" class=\"btn btn-info\">确定</button>　",
+		//授权页面的授权按钮
+		butAuthorize : "　<button type=\"button\" id=\"dialog-but-authorize\" class=\"btn btn-info\">授权</button>　",
 		
 		createDialogBefore : function(type){
 			var rowData = table.bootstrapTable('getSelections');
@@ -58,7 +70,7 @@ $.beeDialog = {
 				return false;
 			}else{
 		    	$("#view-dialog").removeClass("view-dialog-hidden");
-		    	$("body").css("overflow","hidden");
+		    	//$("body").css("overflow","hidden");
 		    	$("#view-dialog").addClass("view-dialog-show");
 		    	return true;
 			}
@@ -87,7 +99,7 @@ $.beeDialog = {
 				var value = header[i];
 		        if(value.field!="state"){
 		        	var temp = "";
-		        	if(value.editType == "text"){
+		        	if(value.editType == "text" || !value.editType){
 		        		temp = $.beeDialog.text;
 		            	temp = temp.replace(new RegExp(/({id})/g), value.field);
 		            	temp = temp.replace("{fileName}", value.title);
@@ -115,7 +127,12 @@ $.beeDialog = {
 			        		temp = $.beeDialog.select;
 			            	temp = temp.replace(new RegExp(/({id})/g), value.field);
 			            	temp = temp.replace("{fileName}", value.title);
-			            	temp = temp.replace(new RegExp(/({option})/g), eval(value.field+"_option"));
+			            	var option = eval(value.field+"_option");
+			            	if(type == "edit"){
+				            	var showValue = eval("rowData[0]." + value.field);
+				            	option = option.replace("value='"+showValue+"'", "value='"+showValue+"' selected");
+			            	}
+			            	temp = temp.replace(new RegExp(/({option})/g), option);
 		            	}else{
 		            		temp = $.beeDialog.text;
 			            	temp = temp.replace(new RegExp(/({id})/g), value.field);
@@ -135,10 +152,10 @@ $.beeDialog = {
 			            	filetemp = filetemp + temp;
 			            	n = n + 1;
 		            	}
-		        	}else{
+		        	}else if(value.editType == "textarea"){
 		        		temp = $.beeDialog.textarea;
 		        		if(n==0){
-		                	temp = temp.replace("{id}", value.field);
+		                	temp = temp.replace(new RegExp(/({id})/g), value.field);
 		                	temp = temp.replace("{fileName}", value.title);
 		                	temp = temp.replace("{readonly}", readonly);
 		                	if(type != "add"){
@@ -185,6 +202,24 @@ $.beeDialog = {
 		    $.beeDialog.setDialogBut(type);
 		},
 		
+		//用于展示菜单授权的对话框
+		createAuthDialog : function(){
+			var rowData = table.bootstrapTable('getSelections');
+			if(rowData.length == 0){
+				$.beeAlert.open("9999", "请选择记录");
+				return;
+			}
+			$.fn.zTree.init($("#authTree"), $.chkbokTree.setting, $.chkbokTree.zNodes);
+			$.chkbokTree.setCheck();
+			$("#py").bind("change", $.chkbokTree.setCheck);
+			$("#sy").bind("change", $.chkbokTree.setCheck);
+			$("#pn").bind("change", $.chkbokTree.setCheck);
+			$("#sn").bind("change", $.chkbokTree.setCheck);
+		    $.beeDialog.setDialogBut("authorize");
+			$("#view-dialog").removeClass("view-dialog-hidden");
+	    	$("#view-dialog").addClass("view-dialog-show");
+		},
+		
 		setDialogBut : function(type){
 			$("#dialog-but-area").empty();
 			$("#dialog-but-area").append($.beeDialog.butBack);
@@ -198,12 +233,26 @@ $.beeDialog = {
 			}else if(type == "view"){
 				$("#dialog-but-area").append($.beeDialog.butSure);
 				$("#dialog-but-sure").bind("click", function(){$.beeDialog.closeWindow();});
+			}else if(type == "authorize"){
+				$("#dialog-but-area").append($.beeDialog.butAuthorize);
+				$("#dialog-but-authorize").bind("click", function(){authorize();});
 			}
 		},
 
 		closeWindow : function(){
 			//恢复页面滚动
 			$("body").css("overflow","auto");
+			//清除已经写入的内容
+			if($("#form-horizontal")){
+				$("#form-horizontal").empty();
+			}
+			if($("#authTree")){
+				$("#authTree").empty();
+			}
+			if($("#dialog-but-area")){
+				$("#dialog-but-area").empty();
+			}
+			
 			//去掉显示样式
 			$("#view-dialog").removeClass("view-dialog-show");
 			//添加隐藏样式
@@ -300,7 +349,7 @@ function initTable(queryUrl) {
         pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
         strictSearch: false,
         clickToSelect: true,                //是否启用点击选中行
-        height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+        height: 440,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: key,                     //每一行的唯一标识，一般为主键列
         cardView: false,                    //是否显示详细视图
         detailView: false,                   //是否显示父子表
@@ -313,7 +362,7 @@ function initTable(queryUrl) {
 }
 
 $.beeAjaxParam = {
-		requestParam : {},
+		requestParam : {"userNo": sessionStorage.getItem("userNo")},
 		requestUrl : "",
 		async : true,
 		successCallBack : function(result){
@@ -367,6 +416,110 @@ $.beeAlert = {
 			+ "<div class=\"content\">{content}</div>"
 			+ "<div class=\"floor\"><button type=\"button\" id=\"btn-alert\" class=\"btn btn-primary btn-xs\">确定</button></div>"
 			+ "</div>" + "</div>",//弹出框模板
+}
+
+$.chkbokTree = {
+	setting : {
+		check : {
+			enable : true,
+			chkStyle : "checkbox",
+			chkboxType : {
+				"Y" : "ps",
+				"N" : "ps"
+			}
+		},
+		data : {
+			simpleData : {
+				enable : true
+			}
+		}
+	},
+	zNodes : [ {
+		id : 1,
+		pId : 0,
+		name : "随意勾选 1",
+		open : true
+	}, {
+		id : 11,
+		pId : 1,
+		name : "随意勾选 1-1",
+		open : true
+	}, {
+		id : 111,
+		pId : 11,
+		name : "随意勾选 1-1-1"
+	}, {
+		id : 112,
+		pId : 11,
+		name : "随意勾选 1-1-2"
+	}, {
+		id : 12,
+		pId : 1,
+		name : "随意勾选 1-2",
+		open : true
+	}, {
+		id : 121,
+		pId : 12,
+		name : "随意勾选 1-2-1"
+	}, {
+		id : 122,
+		pId : 12,
+		name : "随意勾选 1-2-2"
+	}, {
+		id : 2,
+		pId : 0,
+		name : "随意勾选 2",
+		open : true
+	}, {
+		id : 21,
+		pId : 2,
+		name : "随意勾选 2-1"
+	}, {
+		id : 22,
+		pId : 2,
+		name : "随意勾选 2-2",
+		open : true
+	}, {
+		id : 221,
+		pId : 22,
+		name : "随意勾选 2-2-1"
+	}, {
+		id : 222,
+		pId : 22,
+		name : "随意勾选 2-2-2"
+	}, {
+		id : 23,
+		pId : 2,
+		name : "随意勾选 2-3", 
+		open:true},
+			{ id:231, pId:23, name:"随意勾选 2-3-1"},
+			{ id:232, pId:23, name:"随意勾选 2-3-2"},
+			{ id:233, pId:23, name:"随意勾选 2-3-3"},
+			{ id:234, pId:23, name:"随意勾选 2-3-4"},
+			{ id:235, pId:23, name:"随意勾选 2-3-5"},
+			{ id:236, pId:23, name:"随意勾选 2-3-6"},
+			{ id:237, pId:23, name:"随意勾选 2-3-7"},
+			{ id:238, pId:23, name:"随意勾选 2-3-8"} ],
+
+	setCheck : function() {
+		var zTree = $.fn.zTree.getZTreeObj("authTree"), 
+		py = $("#py").attr("checked") ? "p" : "s", 
+		sy = $("#sy").attr("checked") ? "s": "p", 
+		pn = $("#pn").attr("checked") ? "p" : "s", 
+		sn = $("#sn").attr("checked") ? "s" : "p", 
+		type = {
+			"Y" : py + sy,
+			"N" : pn + sn
+		};
+		zTree.setting.check.chkboxType = type;
+		$.chkbokTree.showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "'+ type.N + '" };');
+	},
+	showCode : function(str) {
+		if (!code)
+			code = $("#code");
+		code.empty();
+		code.append("<li>" + str + "</li>");
+	}
 }
 
 //用于查询数据 回调函数必须自定义

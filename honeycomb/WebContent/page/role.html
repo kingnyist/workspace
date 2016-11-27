@@ -5,32 +5,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
     <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css"> 
     <link rel="stylesheet" href="js/bootstrap/css/bootstrap-table.min.css"> 
+    <link rel="stylesheet" href="css/zTreeStyle/zTreeStyle.css">
     <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
-<div class="col-mod-12 guide-row">系统管理>数据字典管理</div>
+<div class="col-mod-12 guide-row">系统管理>角色管理</div>
 <div class="row">
   <div class="col-xs-1">
     	<!-- 占位 -->
   </div>
   <div class="col-xs-1 query-area text-right">
-    	数据类型
+    	角色编号
   </div>
   <div class="col-xs-3">
-    <input type="text" id="query-dateType" class="form-control">
+    <input type="text" id="query-menuNo" class="form-control">
   </div>
   <div class="col-xs-1 query-area text-right">
-    	数据名称
+    	角色名称
   </div>
   <div class="col-xs-3">
-    <input type="text" id="query-dateTypeName" class="form-control">
+    <input type="text" id="query-menuName" class="form-control">
   </div>
   <div class="col-xs-1">
     <button type="button" id="btn-query" class="btn btn-primary">查询</button>
   </div>
 </div>
 <div class="container">
-	<div class="col-xs-12  text-right">
+	<div class="col-xs-6  text-left">
+    <button type="button" id="btn-authorize" class="btn btn-primary btn-xs">角色授权</button>
+    </div>
+	<div class="col-xs-6  text-right">
     <button type="button" id="btn-view" class="btn btn-success btn-xs">查看</button>
     <button type="button" id="btn-add" class="btn btn-info btn-xs">添加</button>
     <button type="button" id="btn-edit" class="btn btn-warning btn-xs">编辑</button>
@@ -41,9 +45,12 @@
 <div id="view-dialog" class="view-dialog-hidden">
 	<div class="dialog-header">
 		<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-		<div id="dialog-title" class="col-xs-11 guide-row">用户编辑</div>
+		<div id="dialog-title" class="col-xs-11 guide-row">角色编辑</div>
     </div>
 	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
+	<div>
+	   <ul id="authTree" class="ztree"></ul>
+	</div>
 	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
 	<div class="dialog-bottom"></div>
 </div> 
@@ -53,33 +60,45 @@
     <script src="js/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/bootstrap/js/bootstrap-table.js"></script>
     <script src="js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.excheck.js"></script>
     <script src="js/common.js"></script>
     <script>
-    var queryUrl = '/honeycomb/data/list.htm?rnd=' + Math.random();
-    var key = "id";//设置主键
-    $.beeDialog.columnNum = 2;//设置Dialog一行显示字段数量
+    var queryUrl = '/honeycomb/role/list.htm?rnd=' + Math.random();
+    var key = "menuId";//设置主键
+    var columnNum = 2;//设置Dialog一行显示字段数量
     var table = $('#table');
+    var datalist; //数据字典列表
+    var status_option = "";//构造状态下拉列表
+    var code;//用于zTree
     $(function () {
+    	queryDateDic("USABLE,WETHER", function(result){datalist = result;});
     	initTable(queryUrl, table);
+    	status_option = create_status_option("USABLE");
+    	$('#btn-authorize').bind('click', function(){
+        	$.beeDialog.createAuthDialog();
+    	});
     });
     var header = [{
         field: 'state',
+        align: 'middle',
         checkbox: true
     }, {
         field: 'id',
-        title: '编号',
-        width: 80,
+        title: '角色编号',
+        width: 100,
         align: 'middle',
         valign: 'middle',
-        visible: false,
+        visible: true,
         view: true,
         add: false,
         edit: true,
         need: false,
+        editType: "text",
         sortable: true
     }, {
-        field: 'dataType',
-        title: '数据类型',
+        field: 'roleName',
+        title: '角色名称',
         width: 80,
         align: 'middle',
         valign: 'middle',
@@ -92,102 +111,78 @@
         need: true,
         sortable: true
     }, {
-        field: 'dataTypeName',
-        title: '数据类型名称',
+        field: 'status',
+        title: '状态',
         width: 80,
         align: 'middle',
         valign: 'middle',
+        formatter: formatStatus,
         visible: true,
         view: true,
         add: true,
         edit: true,
-        editType: "text",
-        verify: "string::0",
+        editType: "select",
+        verify: "String",
         need: true,
         sortable: true
     }, {
-        field: 'dataValue',
-        title: '数据值',
-        width: 80,
+        field: 'statusRem',
+        title: '状态备注',
+        width: 120,
         align: 'middle',
         valign: 'middle',
         visible: true,
         view: true,
         add: true,
         edit: true,
-        editType: "text",
-        verify: "String:50:3",
-        need: true,
-        sortable: true
-    }, {
-        field: 'dataName',
-        title: '数据名称',
-        width: 100,
-        align: 'middle',
-        valign: 'middle',
-        visible: true,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
+        editType: "textarea",
         sortable: true
     }, {
         field: 'createTime',
         title: '创建时间',
-        width: 100,
+        width: 120,
         align: 'middle',
-        valign: 'middle',
+        valign: 'top',
+        visible: false,
+        view: true,
+        add: false,
+        edit: false,
+        editType: "text",
+        need: false,
+        sortable: true
+    }, {
+        field: 'updateTime',
+        title: '修改时间',
+        width: 120,
+        align: 'middle',
+        valign: 'top',
         visible: true,
         view: true,
         add: false,
         edit: false,
-        need: true,
-        sortable: true
-    }, {
-        field: 'updateTime',
-        title: '更新时间',
-        width: 40,
-        align: 'middle',
-        valign: 'middle',
-        visible: false,
-        view: true,
-        add: false,
-        edit: false,
-        need: true,
-        sortable: true
-    }, {
-        field: 'operator',
-        title: '最后更新人',
-        width: 80,
-        align: 'middle',
-        valign: 'middle',
-        visible: false,
-        view: true,
-        add: false,
-        edit: false,
-        need: true,
+        editType: "text",
+        need: false,
         sortable: true
     }]; 
     
     function queryParams(params) {
     	var result = params;
-    	var dateType = $("#query-dataType").val();
-    	var dateTypeName = $("#query-dateTypeName").val();
-    	if(dateType && dateType != "")
-    		result.dateType=dateType;
-    	if(dateTypeName && dateTypeName != "")
-    		result.dateTypeName=dateTypeName;
+    	var id = $("#query-roleNo").val();
+    	var roleName = $("#query-roleName").val();
+    	if(id && id != "")
+    		result.id=id;
+    	if(roleName && roleName != "")
+    		result.roleName=roleName;
         return result;
     }
     
     function add(){
     	$.beeAjaxParam.requestParam = {
-    			dataType : $("#dataType").val(),
-    			dataTypeName : $("#dataTypeName").val(),
-    			dataName : $("#dataName").val(),
-    			dataValue : $("#dataValue").val()
+    			roleName : $("#roleName").val(),
+    			status : $("#status").val(),
+    			statusRem : $("#statusRem").val()
     	};
-    	$.beeAjaxParam.requestUrl = '/honeycomb/data/add.htm?rnd=' + Math.random();
+    	$.beeAjaxParam.requestUrl = '/honeycomb/role/add.htm?rnd=' + Math.random();
     	if(!$.beeDialog.verify()){
     		return;
     	}
@@ -197,12 +192,11 @@
     function edit(){
     	$.beeAjaxParam.requestParam = {
     			id : $("#id").val(),
-    			dataType : $("#dataType").val(),
-    			dataTypeName : $("#dataTypeName").val(),
-    			dataName : $("#dataName").val(),
-    			dataValue : $("#dataValue").val()
+    			roleName : $("#roleName").val(),
+    			status : $("#status").val(),
+    			statusRem : $("#statusRem").val()
     	};
-    	$.beeAjaxParam.requestUrl = '/honeycomb/data/edit.htm?rnd=' + Math.random();
+    	$.beeAjaxParam.requestUrl = '/honeycomb/role/edit.htm?rnd=' + Math.random();
     	if(!$.beeDialog.verify()){
     		return;
     	}
@@ -217,8 +211,18 @@
 		}
     	$.beeAjaxParam.requestParam = {"id":rowData[0].id};
     	$.beeAjaxParam.requestParam = $('#table').bootstrapTable('getSelections')[0];
-    	$.beeAjaxParam.requestUrl = '/honeycomb/data/delete.htm?rnd=' + Math.random();
+    	$.beeAjaxParam.requestUrl = '/honeycomb/role/delete.htm?rnd=' + Math.random();
     	beeCallAjax();
+    }
+    
+    function create_status_option(key){
+    	var returnValue = "<option value=''>请选择</option>";
+    	for(var n = 0; n < datalist.length; n++){
+    		if(key == datalist[n].dataType){
+    			returnValue = returnValue + "<option value='"+datalist[n].dataValue+"'>"+datalist[n].dataName+"</option>"
+    		}
+    	}
+    	return returnValue;
     }
     
 </script>

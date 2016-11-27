@@ -103,4 +103,35 @@
       UPDATE_TIME = #{updateTime,jdbcType=DATE}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="selectListByCondition" resultMap="BaseResultMap" parameterType="com.bee.base.model.BeeRole" >
+    select 
+    <include refid="Base_Column_List" />
+    from bee_role
+    where 1=1 
+      <if test="id != null" >
+        and ID = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        and ROLE_NAME = #{roleName,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and STATUS = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="statusRem != null" >
+        and STATUS_REM = #{statusRem,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and CREATE_TIME = #{createTime,jdbcType=DATE}
+      </if>
+      <if test="updateTime != null" >
+        and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      order by CREATE_TIME
+      <if test="limit != null and limit != ''">
+      limit #{offset,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="selectMaxId" resultType="java.lang.String">
+    select  max(id) from bee_role
+  </select>
 </mapper>

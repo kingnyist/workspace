@@ -1,341 +1,82 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
-    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css"> 
-    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-table.min.css"> 
-    <link rel="stylesheet" href="css/common.css">
-</head>
-<body>
-<div class="col-mod-12 guide-row">系统管理>用户管理</div>
-<div class="row">
-  <div class="col-xs-1">
-    	<!-- 占位 -->
-  </div>
-  <div class="col-xs-1 query-area text-right">
-    	用户编号
-  </div>
-  <div class="col-xs-3">
-    <input type="text" id="query-userNo" class="form-control">
-  </div>
-  <div class="col-xs-1 query-area text-right">
-    	手机号
-  </div>
-  <div class="col-xs-3">
-    <input type="text" id="query-phoneNo" class="form-control">
-  </div>
-  <div class="col-xs-1">
-    <button type="button" id="btn-query" class="btn btn-primary">查询</button>
-  </div>
+<HTML>
+ <HEAD>
+  <TITLE> ZTREE DEMO </TITLE>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="css/zTreeStyle/zTreeStyle.css">
+  <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+  <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+  <script type="text/javascript" src="js/jquery.ztree.excheck.js"></script>
+  <SCRIPT LANGUAGE="JavaScript">
+  		var setting = {
+  			check: {
+  				enable: true,
+  				chkStyle: "checkbox",
+  				chkboxType: { "Y" : "ps", "N" : "ps"}
+  			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+
+		var zNodes =[
+			{ id:1, pId:0, name:"随意勾选 1", open:true},
+			{ id:11, pId:1, name:"随意勾选 1-1", open:true},
+			{ id:111, pId:11, name:"随意勾选 1-1-1"},
+			{ id:112, pId:11, name:"随意勾选 1-1-2"},
+			{ id:12, pId:1, name:"随意勾选 1-2", open:true},
+			{ id:121, pId:12, name:"随意勾选 1-2-1"},
+			{ id:122, pId:12, name:"随意勾选 1-2-2"},
+			{ id:2, pId:0, name:"随意勾选 2", open:true},
+			{ id:21, pId:2, name:"随意勾选 2-1"},
+			{ id:22, pId:2, name:"随意勾选 2-2", open:true},
+			{ id:221, pId:22, name:"随意勾选 2-2-1"},
+			{ id:222, pId:22, name:"随意勾选 2-2-2"},
+			{ id:23, pId:2, name:"随意勾选 2-3", open:true},
+			{ id:231, pId:23, name:"随意勾选 2-3-1"},
+			{ id:232, pId:23, name:"随意勾选 2-3-2"},
+			{ id:233, pId:23, name:"随意勾选 2-3-3"},
+			{ id:234, pId:23, name:"随意勾选 2-3-4"},
+			{ id:235, pId:23, name:"随意勾选 2-3-5"},
+			{ id:236, pId:23, name:"随意勾选 2-3-6"},
+			{ id:237, pId:23, name:"随意勾选 2-3-7"},
+			{ id:238, pId:23, name:"随意勾选 2-3-8"}
+		];
+		
+		var code ;
+		
+		function setCheck() {
+			var zTree = $.fn.zTree.getZTreeObj("authTree"),
+			py = $("#py").attr("checked")? "p":"s",
+			sy = $("#sy").attr("checked")? "s":"p",
+			pn = $("#pn").attr("checked")? "p":"s",
+			sn = $("#sn").attr("checked")? "s":"p",
+			type = { "Y":py + sy, "N":pn + sn};
+			zTree.setting.check.chkboxType = type;
+			showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "' + type.N + '" };');
+		}
+		function showCode(str) {
+			if (!code) code = $("#code");
+			code.empty();
+			code.append("<li>"+str+"</li>");
+		}
+		
+		$(document).ready(function(){
+			$.fn.zTree.init($("#authTree"), setting, zNodes);
+			setCheck();
+			$("#py").bind("change", setCheck);
+			$("#sy").bind("change", setCheck);
+			$("#pn").bind("change", setCheck);
+			$("#sn").bind("change", setCheck);
+		});
+
+  </SCRIPT>
+ </HEAD>
+<BODY>
+<div>
+   <ul id="authTree" class="ztree"></ul>
 </div>
-<div class="container">
-	<div class="col-xs-6  text-left">
-    <button type="button" id="btn-restPwd" class="btn btn-primary btn-xs">重置密码</button>
-    </div>
-	<div class="col-xs-6  text-right">
-    <button type="button" id="btn-view" class="btn btn-success btn-xs">查看</button>
-    <button type="button" id="btn-add" class="btn btn-info btn-xs">添加</button>
-    <button type="button" id="btn-edit" class="btn btn-warning btn-xs">编辑</button>
-    <button type="button" id="btn-delete" class="btn btn-danger btn-xs">删除</button>
-    </div>
-    <table id="table-user"></table>
-</div>
-<div id="view-dialog" class="view-dialog-hidden">
-	<div class="dialog-header">
-		<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-		<div id="dialog-title" class="col-xs-11 guide-row">用户编辑</div>
-    </div>
-	<form id="form-horizontal" class="form-horizontal" role="form"><!-- 页面编辑框 --></form>
-	<div id="dialog-but-area" class="dialog-but-area"><!-- 按钮区 --></div>
-</div> 
-</div>
-</body>
-    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
-    <script src="js/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/bootstrap/js/bootstrap-table.js"></script>
-    <script src="js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
-    <script src="js/common.js"></script>
-    <script>
-    var queryUrl = '/honeycomb/user/list.htm?rnd=' + Math.random();
-    var key = "userNo";//设置主键
-    var columnNum = 2;//设置Dialog一行显示字段数量
-    var table = $('#table-user');
-    $(function () {
-    	initTable(queryUrl, table);
-    	$('#btn-restPwd').bind('click', function(){
-    		$.beeAlert.open("success","成功");
-    	});
-    });
-    var header = [{
-        field: 'state',
-        checkbox: true
-    }, {
-        field: 'userNo',
-        title: '用户编号',
-        width: 70,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: false,
-        edit: true,
-        editType: "text",
-        verify: "string:2:10",
-        need: false,
-        sortable: true
-    }, {
-        field: 'userName',
-        title: '用户名称',
-        width: 80,
-        align: 'middle',
-        valign: 'middle',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string:10:2",
-        need: true,
-        sortable: true
-    }, {
-        field: 'phoneNo',
-        title: '手机号',
-        width: 80,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "cellphone",
-        need: true,
-        sortable: true
-    }, {
-        field: 'idCard',
-        title: '身份证号',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "idcard",
-        need: true,
-        sortable: true
-    }, {
-        field: 'departmentNo',
-        title: '部门编号',
-        width: 80,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'departmentName',
-        title: '部门名称',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: true,
-        sortable: true
-    }, {
-        field: 'roleNo',
-        title: '角色编号',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'roleName',
-        title: '角色名称',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: true,
-        sortable: true
-    }, {
-        field: 'branchName',
-        title: '分支机构名称',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'branchNo',
-        title: '分支机构编号',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'status',
-        title: '状态',
-        width: 50,
-        align: 'middle',
-        valign: 'top',
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'statusRem',
-        title: '状态备注',
-        width: 50,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "textarea",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'loginIp',
-        title: '登录IP',
-        width: 50,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'createTime',
-        title: '创建时间',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: false,
-        edit: false,
-        editType: "text",
-        need: false,
-        sortable: true
-    }, {
-        field: 'updateTime',
-        title: '修改时间',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: true,
-        view: true,
-        add: false,
-        edit: false,
-        editType: "text",
-        need: false,
-        sortable: true
-    }]; 
-    
-    function queryParams(params) {
-        return {
-            pageSize: params.pageSize,
-            userNo: $("#query-userNo").val(),
-            phoneNo: $("#query-phoneNo").val(),  
-            startRowNum: 0,
-            endRowNum: 10, 
-            offset: params.offset,
-            limit: params.limit,
-            order: params.sortOrder
-        };
-    }
-    
-    function add(){
-    	$.beeAjaxParam.requestParam = {
-    			userName : $("#userName").val(),
-    			phoneNo : $("#phoneNo").val(),
-    			email : $("#email").val(),
-    			idCard : $("#idCard").val(),
-    			departmentNo : $("#departmentNo").val(),
-    			departmentName : $("#departmentName").val(),
-    			roleNo : $("#roleNo").val(),
-    			roleName : $("#roleName").val(),
-    			branchNo : $("#branchNo").val(),
-    			branchName : $("#branchName").val(),
-    			status : $("#status").val(),
-    			statusRem : $("#statusRem").val()
-    	};
-    	$.beeAjaxParam.requestUrl = '/honeycomb/user/add.htm?rnd=' + Math.random();
-    	if(!$.beeDialog.verify()){
-    		return;
-    	}
-    	beeCallAjax();
-    }
-    
-    function edit(){
-    	$.beeAjaxParam.requestParam = {
-    			userNo : $("#userNo").val(),
-    			userName : $("#userName").val(),
-    			phoneNo : $("#phoneNo").val(),
-    			email : $("#email").val(),
-    			idCard : $("#idCard").val(),
-    			departmentNo : $("#departmentNo").val(),
-    			departmentName : $("#departmentName").val(),
-    			roleNo : $("#roleNo").val(),
-    			roleName : $("#roleName").val(),
-    			branchNo : $("#branchNo").val(),
-    			branchName : $("#branchName").val(),
-    			status : $("#status").val(),
-    			statusRem : $("#statusRem").val()
-    	};
-    	$.beeAjaxParam.requestUrl = '/honeycomb/user/edit.htm?rnd=' + Math.random();
-    	if(!$.beeDialog.verify()){
-    		return;
-    	}
-    	beeCallAjax();
-    }
-    
-    function deleteRow(){
-    	$.beeAjaxParam.requestParam = $('#table-user').bootstrapTable('getSelections')[0];
-    	$.beeAjaxParam.requestUrl = '/honeycomb/user/delete.htm?rnd=' + Math.random();
-    	beeCallAjax();
-    }
-    
-</script>
-</html>
+</BODY>
+</HTML>
