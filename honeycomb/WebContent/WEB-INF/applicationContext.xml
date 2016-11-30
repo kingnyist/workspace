@@ -14,8 +14,9 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
        
-    <import resource="classpath:conf/spring-mybatis.xml" /> 
-     
+    <!-- <import resource="classpath:conf/spring-interceptors.xml" /> --> 
+    <import resource="classpath:conf/spring-mybatis.xml" />     
+    
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>

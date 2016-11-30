@@ -21,8 +21,6 @@
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from map_role_menu
     where ID = #{id,jdbcType=VARCHAR}
   </select>
@@ -130,4 +128,52 @@
       UPDATE_TIME = #{updateTime,jdbcType=DATE}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
+  
+  <delete id="deleteBySelectivity" parameterType="com.bee.base.model.MapRoleMenu" >
+    delete from map_role_menu
+    where 1 = 1
+    <if test="menuNo != null" >
+       and MENU_NO = #{menuNo,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+       and STATUS = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="statusRem != null" >
+       and STATUS_REM = #{statusRem,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+       and CREATE_TIME = #{createTime,jdbcType=DATE}
+      </if>
+      <if test="updateTime != null" >
+       and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="roleNo != null" >
+       and ROLE_NO = #{roleNo,jdbcType=VARBINARY}
+      </if>
+  </delete>
+  
+  <select id="selectListByCondition" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from map_role_menu
+    where 1 = 1
+    <if test="menuNo != null" >
+       and MENU_NO = #{menuNo,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+       and STATUS = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="statusRem != null" >
+       and STATUS_REM = #{statusRem,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+       and CREATE_TIME = #{createTime,jdbcType=DATE}
+      </if>
+      <if test="updateTime != null" >
+       and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="roleNo != null" >
+       and ROLE_NO = #{roleNo,jdbcType=VARBINARY}
+      </if>
+  </select>
 </mapper>

@@ -18,7 +18,6 @@ import com.bee.base.bean.ResultBean;
 import com.bee.base.dao.BeeRoleMapper;
 import com.bee.base.model.BeeRole;
 import com.bee.common.util.DateUtil;
-import com.bee.common.util.ToolUtil;
 import com.bee.common.variables.SystemCode;
   
 @Controller  
@@ -83,7 +82,7 @@ public class RoleController extends BaseController{
         BeeRole = requestBean;
         String maxMenuId = beeRoleDao.selectMaxId()==null?"ROLE000":beeRoleDao.selectMaxId();
         Integer num = Integer.valueOf(maxMenuId.replaceAll("ROLE", ""));
-        String roleId = "BEE" + String.format("%03d", num+1);
+        String roleId = "ROLE" + String.format("%03d", num+1);
         BeeRole.setId(roleId);
         BeeRole.setCreateTime(DateUtil.getNowDate());
         BeeRole.setUpdateTime(DateUtil.getNowDate());

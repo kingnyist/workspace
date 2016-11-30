@@ -64,6 +64,8 @@
     var table = $('#table-user');
     var datalist; //数据字典列表
     var status_option = "";//构造状态下拉列表
+    var roleList;
+    var roleNo_option = "";//构造状态下拉列表
     $(function () {
     	queryDateDic("USABLE", function(result){datalist = result;});
     	initTable(queryUrl, table);
@@ -71,6 +73,8 @@
     		restPwd();
     	});
     	status_option = create_status_option("USABLE");
+    	queryRoles();
+    	roleNo_option = create_roleNo_option();
     });
     var header = [{
         field: 'state',
@@ -129,20 +133,6 @@
         sortable: true
     }, {
         field: 'departmentNo',
-        title: '部门编号',
-        width: 80,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'departmentName',
         title: '部门名称',
         width: 100,
         align: 'middle',
@@ -156,48 +146,21 @@
         sortable: true
     }, {
         field: 'roleNo',
-        title: '角色编号',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
-        field: 'roleName',
         title: '角色名称',
         width: 100,
         align: 'middle',
         valign: 'top',
+        formatter: formatRole,
         view: true,
         add: true,
         edit: true,
-        editType: "text",
+        editType: "select",
         verify: "string",
         need: true,
         sortable: true
     }, {
-        field: 'branchName',
-        title: '分支机构名称',
-        width: 100,
-        align: 'middle',
-        valign: 'top',
-        visible: false,
-        view: true,
-        add: true,
-        edit: true,
-        editType: "text",
-        verify: "string",
-        need: false,
-        sortable: true
-    }, {
         field: 'branchNo',
-        title: '分支机构编号',
+        title: '分支机构名称',
         width: 100,
         align: 'middle',
         valign: 'top',
@@ -297,11 +260,8 @@
     			email : $("#email").val(),
     			idCard : $("#idCard").val(),
     			departmentNo : $("#departmentNo").val(),
-    			departmentName : $("#departmentName").val(),
     			roleNo : $("#roleNo").val(),
-    			roleName : $("#roleName").val(),
     			branchNo : $("#branchNo").val(),
-    			branchName : $("#branchName").val(),
     			status : $("#status").val(),
     			statusRem : $("#statusRem").val()
     	};
@@ -320,11 +280,8 @@
     			email : $("#email").val(),
     			idCard : $("#idCard").val(),
     			departmentNo : $("#departmentNo").val(),
-    			departmentName : $("#departmentName").val(),
     			roleNo : $("#roleNo").val(),
-    			roleName : $("#roleName").val(),
     			branchNo : $("#branchNo").val(),
-    			branchName : $("#branchName").val(),
     			status : $("#status").val(),
     			statusRem : $("#statusRem").val()
     	};
@@ -367,5 +324,31 @@
     	return returnValue;
     }
     
+    function queryRoles() {
+		var requestParam = {};
+		var url = '/honeycomb/role/roleShow.htm?rnd='+ Math.random();
+		beeCallAjaxQuery(function(data) {
+			roleList = data;
+		}, url, requestParam, false);
+	}
+    
+    function formatRole(value){
+    	var returnValue = value;
+    	for(var n = 0; n < roleList.length; n++){
+    		if(value == roleList[n].id){
+    			returnValue = roleList[n].roleName;
+    			break;
+    		}
+    	}
+    	return returnValue;
+    }
+    
+    function create_roleNo_option(){
+    	var returnValue = "<option value=''>请选择</option>";
+    	for(var n = 0; n < roleList.length; n++){
+    		returnValue = returnValue + "<option value='"+roleList[n].id+"'>"+roleList[n].roleName+"</option>"
+    	}
+    	return returnValue;
+    }
 </script>
 </html>

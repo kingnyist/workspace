@@ -209,6 +209,10 @@ $.beeDialog = {
 				$.beeAlert.open("9999", "请选择记录");
 				return;
 			}
+			
+			var url = '/honeycomb/authorize/list.htm?rnd=' + Math.random();
+    	    beeCallAjaxQuery($.beeDialog.createTreeChecked, url, {"roleNo":rowData[0].id}, false);
+			
 			$.fn.zTree.init($("#authTree"), $.chkbokTree.setting, $.chkbokTree.zNodes);
 			$.chkbokTree.setCheck();
 			$("#py").bind("change", $.chkbokTree.setCheck);
@@ -218,6 +222,22 @@ $.beeDialog = {
 		    $.beeDialog.setDialogBut("authorize");
 			$("#view-dialog").removeClass("view-dialog-hidden");
 	    	$("#view-dialog").addClass("view-dialog-show");
+		},
+		
+		//设置权限树回显内容
+		createTreeChecked : function(data){
+			for(var n = 0; n < $.chkbokTree.zNodes.length; n++){
+				var nodeId = $.chkbokTree.zNodes[n].id;
+				var isChecked = false;
+				for(var m = 0; m < data.length; m++){
+					var menuNo = data[m].menuNo;
+					if(menuNo == nodeId){
+						isChecked = true;
+					}
+				}
+				if(isChecked){$.chkbokTree.zNodes[n].checked = true;}
+				else{$.chkbokTree.zNodes[n].checked = false;}
+			}
 		},
 		
 		setDialogBut : function(type){
@@ -448,58 +468,8 @@ $.chkbokTree = {
 		id : 111,
 		pId : 11,
 		name : "随意勾选 1-1-1"
-	}, {
-		id : 112,
-		pId : 11,
-		name : "随意勾选 1-1-2"
-	}, {
-		id : 12,
-		pId : 1,
-		name : "随意勾选 1-2",
-		open : true
-	}, {
-		id : 121,
-		pId : 12,
-		name : "随意勾选 1-2-1"
-	}, {
-		id : 122,
-		pId : 12,
-		name : "随意勾选 1-2-2"
-	}, {
-		id : 2,
-		pId : 0,
-		name : "随意勾选 2",
-		open : true
-	}, {
-		id : 21,
-		pId : 2,
-		name : "随意勾选 2-1"
-	}, {
-		id : 22,
-		pId : 2,
-		name : "随意勾选 2-2",
-		open : true
-	}, {
-		id : 221,
-		pId : 22,
-		name : "随意勾选 2-2-1"
-	}, {
-		id : 222,
-		pId : 22,
-		name : "随意勾选 2-2-2"
-	}, {
-		id : 23,
-		pId : 2,
-		name : "随意勾选 2-3", 
-		open:true},
-			{ id:231, pId:23, name:"随意勾选 2-3-1"},
-			{ id:232, pId:23, name:"随意勾选 2-3-2"},
-			{ id:233, pId:23, name:"随意勾选 2-3-3"},
-			{ id:234, pId:23, name:"随意勾选 2-3-4"},
-			{ id:235, pId:23, name:"随意勾选 2-3-5"},
-			{ id:236, pId:23, name:"随意勾选 2-3-6"},
-			{ id:237, pId:23, name:"随意勾选 2-3-7"},
-			{ id:238, pId:23, name:"随意勾选 2-3-8"} ],
+	}
+	],
 
 	setCheck : function() {
 		var zTree = $.fn.zTree.getZTreeObj("authTree"), 
@@ -523,14 +493,14 @@ $.chkbokTree = {
 }
 
 //用于查询数据 回调函数必须自定义
-function beeCallAjaxQuery(callBack) {
+function beeCallAjaxQuery(callBack, url, requestParam, async) {
 	$.ajax({
-		url : $.beeAjaxParam.requestUrl,
+		url : url,
 		type : 'POST',
-		async : false,
+		async : async,
 		dataType : "json",
 		contentType: "application/json",
-		data : JSON.stringify($.beeAjaxParam.requestParam),
+		data : JSON.stringify(requestParam),
 		cache : false,
 		success : function(data) {
 			var result = $.parseJSON(data);
@@ -543,11 +513,11 @@ function beeCallAjaxQuery(callBack) {
 }
 //查询数据字典的数据
 function queryDateDic(dataTypes, callBack){
-	$.beeAjaxParam.requestParam = {
+	var requestParam = {
 			'dataType' : dataTypes
 	};
-	$.beeAjaxParam.requestUrl = '/honeycomb/data/queryAll.htm?rnd=' + Math.random();
-	beeCallAjaxQuery(callBack);
+	var url = '/honeycomb/data/queryAll.htm?rnd=' + Math.random();
+	beeCallAjaxQuery(callBack, url, requestParam, false);
 }
 //格式化状态可用/不可用
 function formatStatus(value){

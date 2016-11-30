@@ -76,8 +76,10 @@
     	initTable(queryUrl, table);
     	status_option = create_status_option("USABLE");
     	$('#btn-authorize').bind('click', function(){
+    		//创建显示对话框
         	$.beeDialog.createAuthDialog();
     	});
+    	queryMenu(queryMenuCallback);
     });
     var header = [{
         field: 'state',
@@ -225,5 +227,50 @@
     	return returnValue;
     }
     
+    function authorize(){
+    	var rowData = table.bootstrapTable('getSelections');
+		if(rowData.length == 0){
+			$.beeAlert.open("9999", "请选择记录");
+			return ;
+		}
+    	
+		var treeObj = $.fn.zTree.getZTreeObj("authTree");
+		var nodes = treeObj.getCheckedNodes(true);
+		var list = [];
+		for(var n = 0; n<nodes.length; n++){
+			var obj = {"menuNo":""};
+			obj.menuNo = nodes[n].id;
+			list[n]=obj;
+		}
+		$.beeAjaxParam.requestParam = {"roleNo":rowData[0].id, "list":list};
+    	$.beeAjaxParam.requestUrl = '/honeycomb/authorize/operate.htm?rnd=' + Math.random();
+    	beeCallAjax();
+    }
+    
+    function queryMenu(queryMenuCallback){
+    	var url = '/honeycomb/menu/menuShow.htm?rnd=' + Math.random();
+    	beeCallAjaxQuery(queryMenuCallback, url, {}, false);
+    }
+    
+    function queryMenuCallback(data){
+    	var nodesArry =  new Array();
+    	for(var n = 0; n < data.length; n++){
+    		var node = {"id":"","pId":"","name":"","checked":false};
+    		node.id = data[n].menuId;
+    		node.pId = data[n].parentId;
+    		node.name = data[n].menuName;
+    		if(data[n].parentId == 0){
+    			node.open = true;
+    		}
+    		nodesArry[n] = node;
+    	}
+    	$.chkbokTree.zNodes = nodesArry;
+    	console.log($.chkbokTree.zNodes);
+    }
+    
+    //设置回显权限内容
+    function createTreeChecked(data){
+		
+    }
 </script>
 </html>

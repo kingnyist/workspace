@@ -2,7 +2,9 @@ package com.bee.base.model;
 
 import java.util.Date;
 
-public class MapRoleMenu {
+import com.bee.base.bean.PageBean;
+
+public class MapRoleMenu extends PageBean {
     private String id;
 
     private String menuNo;
@@ -15,7 +17,7 @@ public class MapRoleMenu {
 
     private Date updateTime;
 
-    private byte[] roleNo;
+    private String roleNo;
 
     public String getId() {
         return id;
@@ -65,11 +67,11 @@ public class MapRoleMenu {
         this.updateTime = updateTime;
     }
 
-    public byte[] getRoleNo() {
+    public String getRoleNo() {
         return roleNo;
     }
 
-    public void setRoleNo(byte[] roleNo) {
+    public void setRoleNo(String roleNo) {
         this.roleNo = roleNo;
     }
 }

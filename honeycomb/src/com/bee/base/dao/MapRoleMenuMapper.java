@@ -1,5 +1,8 @@
 package com.bee.base.dao;
 
+import java.util.List;
+
+import com.bee.base.model.BeeUser;
 import com.bee.base.model.MapRoleMenu;
 
 public interface MapRoleMenuMapper {
@@ -16,4 +19,8 @@ public interface MapRoleMenuMapper {
     int updateByPrimaryKeyWithBLOBs(MapRoleMenu record);
 
     int updateByPrimaryKey(MapRoleMenu record);
+    
+    int deleteBySelectivity(MapRoleMenu record);
+    
+    public List<MapRoleMenu> selectListByCondition(MapRoleMenu record);
 }

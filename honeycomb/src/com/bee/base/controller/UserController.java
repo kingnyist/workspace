@@ -115,27 +115,5 @@ public class UserController extends BaseController{
     	}
         return objectToJson(result);  
     }
-    
-    @RequestMapping(value = "/login", method = RequestMethod.POST)  
-    @ResponseBody  
-    public String login(@RequestBody BeeUser requestBean,HttpServletRequest request){ 
-    	BeeUser user = requestBean;
-        user.setLimit(null);
-        user.setOffset(null);
-        List<BeeUser> list = beeUserDao.selectListByCondition(user);
-        int n = list.size();
-    	ResultBean result = new ResultBean();
-    	if(n == 1){
-    		result.setRspCode(SystemCode.SUCCESS_CODE);
-    		result.setRspMsg(SystemCode.SUCCESS_MSG);
-    		BeeUser bean = list.get(0);
-    		HttpSession session = request.getSession();
-    		session.setAttribute("bee", bean);
-    	}else{
-    		result.setRspCode(SystemCode.LOGIN_FAIL_CODE);
-    		result.setRspMsg(SystemCode.LOGIN_FAIL_MSG);
-    	}
-        return objectToJson(result);  
-    }
-    
+       
 }  

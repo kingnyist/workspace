@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>  
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"  
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
     xmlns:context="http://www.springframework.org/schema/context"  
@@ -9,13 +9,11 @@
                         http://www.springframework.org/schema/context/spring-context-4.0.xsd    
                         http://www.springframework.org/schema/mvc    
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">  
-    <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->  
-    <context:component-scan base-package="com.bee.base.controller" />  
-    <!-- <mvc:interceptors>  
+    <mvc:interceptors>  
 	    <mvc:interceptor>  
-	        <mvc:mapping path="/*/*.htm"/>  
-	        定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的  
+	        <mvc:mapping path="*.htm"/>  
+	        <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->  
 	        <bean class="com.bee.base.Interceptor.LoginInterceptor"/>  
 	    </mvc:interceptor>  
-	</mvc:interceptors>   -->
+	</mvc:interceptors>  
 </beans>  

@@ -23,15 +23,9 @@ public class BeeUser extends PageBean{
 
     private String departmentNo;
 
-    private String departmentName;
-
     private String roleNo;
 
-    private String roleName;
-
     private String branchNo;
-
-    private String branchName;
 
     private String status;
 
@@ -99,14 +93,6 @@ public class BeeUser extends PageBean{
         this.departmentNo = departmentNo == null ? null : departmentNo.trim();
     }
 
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName == null ? null : departmentName.trim();
-    }
-
     public String getRoleNo() {
         return roleNo;
     }
@@ -115,28 +101,12 @@ public class BeeUser extends PageBean{
         this.roleNo = roleNo == null ? null : roleNo.trim();
     }
 
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName == null ? null : roleName.trim();
-    }
-
     public String getBranchNo() {
         return branchNo;
     }
 
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName == null ? null : branchName.trim();
     }
 
     public String getStatus() {
@@ -201,15 +171,12 @@ public class BeeUser extends PageBean{
 		builder.append(", departmentNo=");
 		builder.append(departmentNo);
 		builder.append(", departmentName=");
-		builder.append(departmentName);
 		builder.append(", roleNo=");
 		builder.append(roleNo);
 		builder.append(", roleName=");
-		builder.append(roleName);
 		builder.append(", branchNo=");
 		builder.append(branchNo);
 		builder.append(", branchName=");
-		builder.append(branchName);
 		builder.append(", status=");
 		builder.append(status);
 		builder.append(", statusRem=");

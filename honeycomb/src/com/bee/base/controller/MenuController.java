@@ -17,6 +17,7 @@ import com.bee.base.bean.BaseResponse;
 import com.bee.base.bean.ResultBean;
 import com.bee.base.dao.BeeMenuMapper;
 import com.bee.base.model.BeeMenu;
+import com.bee.base.model.BeeUser;
 import com.bee.common.util.DateUtil;
 import com.bee.common.variables.SystemCode;
   
@@ -32,13 +33,16 @@ public class MenuController extends BaseController{
     @ResponseBody  
     public String menuShow(@RequestBody BeeMenu requestBean,HttpServletRequest request){
     	log.info("查询列表");
-    	BeeMenu beeMenu = requestBean;
-        beeMenu.setLimit(null);
-        beeMenu.setOffset(null);
-        List<BeeMenu> list = beeMenuDao.selectListByCondition(beeMenu);
+    	BeeUser beeUser = (BeeUser) request.getSession().getAttribute("bee");
         BaseResponse<BeeMenu> responseBean = new BaseResponse<BeeMenu>();
-        responseBean.setRows(list);
-
+    	if(beeUser != null && beeUser.getRoleNo() != null){
+    		BeeMenu beeMenu = requestBean;
+            beeMenu.setLimit(null);
+            beeMenu.setOffset(null);
+            List<BeeMenu> list = beeMenuDao.selectListByCondition(beeMenu);
+            responseBean.setRows(list);
+    	}
+    	
         return objectToJson(responseBean);  
     } 
     

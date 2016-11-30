@@ -45,7 +45,7 @@
     			loginParam.password = $.md5($('#password').val());
     		}
     		$.ajax({
-    			url : '/honeycomb/user/login.htm?rnd=' + Math.random(),
+    			url : '/honeycomb/login/login.htm?rnd=' + Math.random(),
     			type : 'POST',
     			async : true,
     			dataType : "json",

@@ -9,11 +9,8 @@
     <result column="EMAIL" property="email" jdbcType="VARCHAR" />
     <result column="ID_CARD" property="idCard" jdbcType="VARCHAR" />
     <result column="DEPARTMENT_NO" property="departmentNo" jdbcType="VARCHAR" />
-    <result column="DEPARTMENT_NAME" property="departmentName" jdbcType="VARCHAR" />
     <result column="ROLE_NO" property="roleNo" jdbcType="VARCHAR" />
-    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="STATUS_REM" property="statusRem" jdbcType="VARCHAR" />
     <result column="LOGIN_IP" property="loginIp" jdbcType="VARCHAR" />
@@ -21,8 +18,8 @@
     <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
   </resultMap>
   <sql id="Base_Column_List" >
-    USER_NO, USER_NAME, PASSWORD, PHONE_NO, EMAIL, ID_CARD, DEPARTMENT_NO, DEPARTMENT_NAME, 
-    ROLE_NO, ROLE_NAME, BRANCH_NO, BRANCH_NAME, STATUS, STATUS_REM, LOGIN_IP, CREATE_TIME, 
+    USER_NO, USER_NAME, PASSWORD, PHONE_NO, EMAIL, ID_CARD, DEPARTMENT_NO, 
+    ROLE_NO, BRANCH_NO, STATUS, STATUS_REM, LOGIN_IP, CREATE_TIME, 
     UPDATE_TIME
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -38,14 +35,14 @@
   <insert id="insert" parameterType="com.bee.base.model.BeeUser" >
     insert into bee_user (USER_NO, USER_NAME, PASSWORD, 
       PHONE_NO, EMAIL, ID_CARD, 
-      DEPARTMENT_NO, DEPARTMENT_NAME, ROLE_NO, 
-      ROLE_NAME, BRANCH_NO, BRANCH_NAME, 
+      DEPARTMENT_NO, ROLE_NO, 
+      BRANCH_NO, 
       STATUS, STATUS_REM, LOGIN_IP, 
       CREATE_TIME, UPDATE_TIME)
     values (#{userNo,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{phoneNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
-      #{departmentNo,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{roleNo,jdbcType=VARCHAR}, 
-      #{roleName,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, 
+      #{departmentNo,jdbcType=VARCHAR}, #{roleNo,jdbcType=VARCHAR}, 
+      #{branchNo,jdbcType=VARCHAR},
       #{status,jdbcType=VARCHAR}, #{statusRem,jdbcType=VARCHAR}, #{loginIp,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE})
   </insert>
@@ -73,20 +70,11 @@
       <if test="departmentNo != null" >
         DEPARTMENT_NO,
       </if>
-      <if test="departmentName != null" >
-        DEPARTMENT_NAME,
-      </if>
       <if test="roleNo != null" >
         ROLE_NO,
       </if>
-      <if test="roleName != null" >
-        ROLE_NAME,
-      </if>
       <if test="branchNo != null" >
         BRANCH_NO,
-      </if>
-      <if test="branchName != null" >
-        BRANCH_NAME,
       </if>
       <if test="status != null" >
         STATUS,
@@ -126,20 +114,11 @@
       <if test="departmentNo != null" >
         #{departmentNo,jdbcType=VARCHAR},
       </if>
-      <if test="departmentName != null" >
-        #{departmentName,jdbcType=VARCHAR},
-      </if>
       <if test="roleNo != null" >
         #{roleNo,jdbcType=VARCHAR},
       </if>
-      <if test="roleName != null" >
-        #{roleName,jdbcType=VARCHAR},
-      </if>
       <if test="branchNo != null" >
         #{branchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="branchName != null" >
-        #{branchName,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
@@ -179,20 +158,11 @@
       <if test="departmentNo != null" >
         DEPARTMENT_NO = #{departmentNo,jdbcType=VARCHAR},
       </if>
-      <if test="departmentName != null" >
-        DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR},
-      </if>
       <if test="roleNo != null" >
         ROLE_NO = #{roleNo,jdbcType=VARCHAR},
       </if>
-      <if test="roleName != null" >
-        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
-      </if>
       <if test="branchNo != null" >
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="branchName != null" >
-        BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         STATUS = #{status,jdbcType=VARCHAR},
@@ -220,11 +190,8 @@
       EMAIL = #{email,jdbcType=VARCHAR},
       ID_CARD = #{idCard,jdbcType=VARCHAR},
       DEPARTMENT_NO = #{departmentNo,jdbcType=VARCHAR},
-      DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR},
       ROLE_NO = #{roleNo,jdbcType=VARCHAR},
-      ROLE_NAME = #{roleName,jdbcType=VARCHAR},
       BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=VARCHAR},
       STATUS_REM = #{statusRem,jdbcType=VARCHAR},
       LOGIN_IP = #{loginIp,jdbcType=VARCHAR},
@@ -258,20 +225,11 @@
       <if test="departmentNo != null and departmentNo != ''" >
         and DEPARTMENT_NO = #{departmentNo,jdbcType=VARCHAR}
       </if>
-      <if test="departmentName != null and departmentName != ''" >
-        and DEPARTMENT_NAME = #{departmentName,jdbcType=VARCHAR}
-      </if>
       <if test="roleNo != null and roleNo != ''" >
         and ROLE_NO = #{roleNo,jdbcType=VARCHAR}
       </if>
-      <if test="roleName != null and roleName != ''" >
-        and ROLE_NAME = #{roleName,jdbcType=VARCHAR}
-      </if>
       <if test="branchNo != null and branchNo != ''" >
         and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-      </if>
-      <if test="branchName != null and branchName != ''" >
-        and BRANCH_NAME = #{branchName,jdbcType=VARCHAR}
       </if>
       <if test="status != null and status != ''" >
         and STATUS = #{status,jdbcType=VARCHAR}
